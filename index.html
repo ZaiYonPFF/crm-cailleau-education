@@ -1,0 +1,2689 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Closer v2 — Maquette interactive</title>
+<style>
+:root {
+  --bg-primary: #0F1117;
+  --bg-secondary: #161922;
+  --bg-tertiary: #1E2230;
+  --bg-hover: #252938;
+  --border: #2A2E3D;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6B7280;
+  --accent: #FF4757;
+  --accent-hover: #FF3344;
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --info: #60A5FA;
+  --purple: #A78BFA;
+  --pink: #F472B6;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* Layout */
+.app { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+.sidebar-header {
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.role-switcher {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+}
+.role-btn {
+  flex: 1;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.role-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.role-btn:hover:not(.active) { background: var(--bg-hover); color: var(--text-primary); }
+
+.nav-section {
+  padding: 16px 12px 8px;
+}
+.nav-section-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  padding: 0 8px 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.nav-item.active {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.nav-item.active::before {
+  content: '';
+  width: 3px;
+  background: var(--accent);
+  position: absolute;
+  left: 0;
+  height: 24px;
+  border-radius: 0 3px 3px 0;
+  margin-left: -12px;
+}
+.nav-item .icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.nav-item .badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.avatar-mini {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+}
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role { font-size: 11px; color: var(--text-tertiary); }
+
+/* Main content */
+.main {
+  flex: 1;
+  margin-left: 240px;
+  min-height: 100vh;
+}
+.topbar {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.search-bar {
+  flex: 1;
+  max-width: 500px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.search-bar kbd {
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: inherit;
+  margin-left: auto;
+}
+.topbar-actions { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+.icon-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.notif-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+}
+
+.content { padding: 24px 32px 60px; }
+.page-header { margin-bottom: 24px; }
+.page-title { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+.page-subtitle { color: var(--text-tertiary); font-size: 13px; }
+
+/* KPI Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  transition: all 0.2s;
+}
+.kpi-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.kpi-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.kpi-value { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+.kpi-sub { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+.kpi-sub.up { color: var(--success); }
+.kpi-sub.down { color: var(--accent); }
+.kpi-card.featured { background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(167,139,250,0.05)); border-color: var(--accent); }
+
+/* Section */
+.section-block { margin-bottom: 28px; }
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title .count {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* Calls list */
+.calls-list { display: flex; flex-direction: column; gap: 8px; }
+.call-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.15s;
+}
+.call-item:hover { background: var(--bg-hover); }
+.call-time { font-size: 12px; color: var(--text-tertiary); width: 50px; font-weight: 600; }
+.call-info { flex: 1; }
+.call-name { font-weight: 500; margin-bottom: 2px; }
+.call-meta { font-size: 12px; color: var(--text-tertiary); display: flex; align-items: center; gap: 8px; }
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tag-kokatoo { background: rgba(96,165,250,0.2); color: var(--info); }
+.tag-pff { background: rgba(255,71,87,0.2); color: var(--accent); }
+.tag-r1 { background: rgba(74,222,128,0.15); color: var(--success); }
+.tag-r2 { background: rgba(96,165,250,0.15); color: var(--info); }
+.tag-r3 { background: rgba(251,191,36,0.15); color: var(--warning); }
+.tag-hot { background: rgba(255,71,87,0.15); color: var(--accent); }
+
+.call-actions { display: flex; gap: 6px; }
+.btn-small {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.btn-small:hover { background: var(--bg-hover); color: var(--text-primary); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+/* FUP list */
+.fup-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.fup-priority { width: 4px; height: 32px; border-radius: 2px; }
+.priority-urgent { background: var(--accent); }
+.priority-high { background: var(--warning); }
+.priority-normal { background: var(--info); }
+
+/* Pipeline table (Monday style) */
+.pipeline-table {
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.pipeline-header-row {
+  background: var(--bg-tertiary);
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 24px 2fr 1fr 1fr 1fr 1fr 1fr 80px 80px;
+  gap: 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+.pipeline-group-header {
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.status-jaune { background: #FACC15; }
+.status-bleu { background: #60A5FA; }
+.status-vert { background: #4ADE80; }
+.status-orange { background: #FB923C; }
+.status-rouge { background: #F87171; }
+.status-gris { background: #6B7280; }
+.status-noir { background: #1F2937; }
+.status-vertfonce { background: #16A34A; }
+
+.pipeline-row {
+  padding: 11px 14px;
+  display: grid;
+  grid-template-columns: 24px 2fr 1fr 1fr 1fr 1fr 1fr 80px 80px;
+  gap: 12px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.pipeline-row:hover { background: rgba(255,255,255,0.02); }
+.pipeline-row .name { font-weight: 500; }
+.pipeline-row .email { font-size: 11px; color: var(--text-tertiary); }
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.score-bar { width: 100%; height: 4px; background: var(--bg-tertiary); border-radius: 2px; overflow: hidden; }
+.score-fill { height: 100%; background: linear-gradient(90deg, var(--warning), var(--accent)); }
+
+/* Commission box */
+.commission-card {
+  background: linear-gradient(135deg, rgba(74,222,128,0.08), rgba(167,139,250,0.05));
+  border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.commission-total {
+  font-size: 42px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--success), var(--info));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+.commission-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.commission-detail {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+.commission-mini {
+  background: rgba(0,0,0,0.2);
+  padding: 12px;
+  border-radius: 8px;
+}
+.commission-mini-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; }
+.commission-mini-value { font-size: 18px; font-weight: 700; margin-top: 2px; }
+
+/* Progress bar */
+.progress-block { margin-bottom: 14px; }
+.progress-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+.progress-label { color: var(--text-secondary); }
+.progress-value { font-weight: 600; }
+.progress-bar { height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), var(--info)); transition: width 0.3s; }
+.progress-fill.amber { background: linear-gradient(90deg, var(--warning), var(--accent)); }
+
+/* Stats by closer */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+.closer-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.closer-card:hover { border-color: var(--accent); }
+.closer-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.closer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+.closer-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.closer-stat { }
+.closer-stat-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; }
+.closer-stat-value { font-size: 18px; font-weight: 700; margin-top: 2px; }
+
+/* Alert */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+}
+.alert-danger { background: rgba(255,71,87,0.1); border-left: 3px solid var(--accent); }
+.alert-warning { background: rgba(251,191,36,0.1); border-left: 3px solid var(--warning); }
+.alert-success { background: rgba(74,222,128,0.1); border-left: 3px solid var(--success); }
+.alert-icon { font-size: 18px; }
+
+/* Hidden by default */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Lead detail */
+.lead-detail-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  gap: 16px;
+}
+.detail-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+.detail-card h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+.lead-avatar-big {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 auto 12px;
+}
+.lead-name { font-size: 18px; font-weight: 700; text-align: center; }
+.lead-meta { text-align: center; color: var(--text-tertiary); font-size: 12px; margin-top: 4px; margin-bottom: 16px; }
+.detail-field { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 12px; }
+.detail-field:last-child { border-bottom: none; }
+.detail-field-label { color: var(--text-tertiary); }
+.detail-field-value { font-weight: 500; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: 16px;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-secondary);
+}
+.timeline-item-time { font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px; }
+.timeline-item-title { font-weight: 500; font-size: 13px; margin-bottom: 2px; }
+.timeline-item-desc { font-size: 12px; color: var(--text-secondary); }
+
+/* Banner role */
+.role-banner {
+  background: linear-gradient(90deg, rgba(255,71,87,0.1), rgba(167,139,250,0.05));
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.role-banner-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.role-banner-text { flex: 1; }
+.role-banner-title { font-weight: 600; font-size: 13px; }
+.role-banner-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+/* Two columns */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Empty state */
+.empty-state {
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+/* Demo notice */
+.demo-notice {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--accent);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  z-index: 200;
+  max-width: 280px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform 0.2s; }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .lead-detail-grid { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════
+   SETTER CRM STYLES
+══════════════════════════════════════ */
+.setter-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.sc {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.sc::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+}
+.sc.s-all::before { background: linear-gradient(90deg, #6c63ff, #ff6584); }
+.sc.s-pot::before { background: var(--info); }
+.sc.s-qua::before { background: var(--success); }
+.sc.s-dis::before { background: var(--accent); }
+.sc:hover, .sc.s-active { background: var(--bg-hover); border-color: #6c63ff; }
+.sc-n { font-size: 30px; font-weight: 800; margin-bottom: 3px; }
+.sc.s-all .sc-n { background: linear-gradient(90deg,#6c63ff,#ff6584); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.sc.s-pot .sc-n { color: var(--info); }
+.sc.s-qua .sc-n { color: var(--success); }
+.sc.s-dis .sc-n { color: var(--accent); }
+.sc-l { font-size: 11px; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+
+.setter-label-bar {
+  display: flex; gap: 8px; margin-bottom: 14px;
+  flex-wrap: wrap; align-items: center;
+}
+.setter-label-title {
+  font-size: 11px; color: var(--text-tertiary);
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: .5px; margin-right: 4px; white-space: nowrap;
+}
+.lf-btn {
+  padding: 5px 13px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border);
+  transition: all .15s; white-space: nowrap;
+  background: var(--bg-tertiary); color: var(--text-secondary);
+}
+.lf-btn:hover { opacity: .85; }
+.lf-btn.lf-active { color: #fff !important; border-color: transparent !important; }
+.lf-btn[data-lf=""].lf-active         { background: #6c63ff; }
+.lf-btn[data-lf="contacte"].lf-active  { background: #3b82f6; }
+.lf-btn[data-lf="rdv_pris"].lf-active  { background: #22c55e; }
+.lf-btn[data-lf="a_relancer"].lf-active { background: #f97316; }
+.lf-btn[data-lf="sms"].lf-active       { background: #a855f7; }
+.lf-btn[data-lf="ne_repond_pas"].lf-active { background: #64748b; }
+.lf-btn[data-lf="pas_interesse"].lf-active { background: #ef4444; }
+.lf-btn[data-lf="mauvais_num"].lf-active   { background: #f59e0b; }
+.lf-btn[data-lf="rappel_prog"].lf-active   { background: #14b8a6; }
+
+.setter-toolbar {
+  display: flex; gap: 10px; margin-bottom: 14px;
+  align-items: center; flex-wrap: wrap;
+}
+.setter-search { flex: 1; min-width: 220px; position: relative; }
+.setter-search input {
+  width: 100%; background: var(--bg-secondary);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 12px 8px 36px; color: var(--text-primary);
+  font-size: 13px; outline: none; transition: border-color .2s;
+}
+.setter-search input:focus { border-color: #6c63ff; }
+.setter-search input::placeholder { color: var(--text-tertiary); }
+.setter-search-icon {
+  position: absolute; left: 11px; top: 50%;
+  transform: translateY(-50%); color: var(--text-tertiary); font-size: 14px;
+}
+.setter-select {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; color: var(--text-primary);
+  font-size: 13px; outline: none; cursor: pointer;
+}
+.setter-result { font-size: 12px; color: var(--text-tertiary); white-space: nowrap; }
+.setter-result span { color: #6c63ff; font-weight: 700; font-size: 14px; }
+
+.setter-sync-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 16px; margin-bottom: 16px;
+  font-size: 12px;
+}
+.setter-sync-status { color: var(--text-secondary); }
+.setter-sync-status.ok { color: var(--success); }
+.setter-sync-status.err { color: var(--accent); }
+.setter-sync-status.loading { color: var(--warning); }
+.setter-refresh-btn {
+  background: var(--bg-tertiary); border: 1px solid var(--border);
+  color: var(--text-secondary); padding: 5px 12px;
+  border-radius: 6px; font-size: 11px; cursor: pointer;
+  transition: all .15s;
+}
+.setter-refresh-btn:hover { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+.setter-refresh-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.setter-tw { overflow-x: auto; margin-bottom: 10px; }
+.setter-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.setter-table thead th {
+  background: var(--bg-tertiary); color: var(--text-tertiary);
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: .5px; font-size: 10.5px;
+  padding: 11px 12px; text-align: left;
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.setter-table tbody tr {
+  border-bottom: 1px solid var(--border); transition: background .1s;
+}
+.setter-table tbody tr:hover { background: var(--bg-hover); }
+.setter-table tbody td { padding: 10px 12px; vertical-align: middle; }
+.setter-table .s-row-qua td:first-child { border-left: 3px solid var(--success); padding-left: 9px; }
+.setter-table .s-row-pot td:first-child { border-left: 3px solid var(--info); padding-left: 9px; }
+
+.s-nm { font-weight: 600; font-size: 13.5px; }
+.s-ns { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+.s-pl, .s-el {
+  color: #a78bfa; text-decoration: none;
+  white-space: nowrap; display: block; font-size: 13px;
+}
+.s-pl:hover, .s-el:hover { color: #fff; text-decoration: underline; }
+.s-dc { color: var(--text-tertiary); font-size: 12px; white-space: nowrap; }
+.s-dc.s-recent { color: var(--success) !important; font-weight: 700; }
+.s-dc.s-old    { color: var(--warning) !important; font-weight: 600; }
+
+.s-badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+.s-bP { background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.3); }
+.s-bQ { background: rgba(34,197,94,.15);  color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+.s-bD { background: rgba(239,68,68,.12);  color: #f87171; border: 1px solid rgba(239,68,68,.25); }
+
+/* Etiquette dropdown */
+.s-etiq-wrap { position: relative; display: inline-block; }
+.s-etiq-sel {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-tertiary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 10px; font-size: 12px;
+  cursor: pointer; transition: all .15s; color: var(--text-secondary);
+  white-space: nowrap; min-width: 140px;
+}
+.s-etiq-sel:hover { border-color: #6c63ff; color: var(--text-primary); }
+.s-etiq-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.s-etiq-arrow { margin-left: auto; font-size: 10px; opacity: .5; }
+.s-etiq-dd {
+  display: none; position: fixed; z-index: 9999;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  min-width: 190px; overflow: hidden;
+}
+.s-etiq-dd.open { display: block; }
+.s-etiq-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 14px; cursor: pointer; font-size: 13px;
+  transition: background .1s;
+}
+.s-etiq-item:hover { background: var(--bg-hover); }
+.s-etiq-item.sel { background: rgba(108,99,255,.12); }
+.s-etiq-item .s-etiq-dot { width: 10px; height: 10px; }
+
+.lc-none       { background: #475569; }
+.lc-contacte   { background: #3b82f6; }
+.lc-rdv_pris   { background: #22c55e; }
+.lc-a_relancer { background: #f97316; }
+.lc-sms        { background: #a855f7; }
+.lc-ne_repond_pas { background: #64748b; }
+.lc-pas_interesse { background: #ef4444; }
+.lc-mauvais_num   { background: #f59e0b; }
+.lc-rappel_prog   { background: #14b8a6; }
+
+.s-ab {
+  background: var(--bg-tertiary); border: 1px solid var(--border);
+  border-radius: 7px; color: var(--text-secondary); cursor: pointer;
+  padding: 5px 9px; font-size: 11.5px; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 3px;
+  margin-right: 3px; transition: all .15s; white-space: nowrap;
+}
+.s-ab:hover { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+.s-ab.wa:hover { background: #25d366; border-color: #25d366; }
+
+.setter-pagination {
+  display: flex; justify-content: center;
+  align-items: center; gap: 7px; padding: 10px 0 20px;
+  flex-wrap: wrap;
+}
+.s-pb {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text-primary); cursor: pointer;
+  padding: 6px 13px; font-size: 12.5px; transition: all .15s;
+}
+.s-pb:hover { background: var(--bg-hover); }
+.s-pb.s-active { background: #6c63ff; border-color: #6c63ff; color: #fff; font-weight: 700; }
+.s-pb:disabled { opacity: .3; cursor: not-allowed; }
+.s-pi { font-size: 12px; color: var(--text-tertiary); }
+
+.setter-no-data {
+  text-align: center; padding: 60px 20px;
+  color: var(--text-tertiary);
+}
+.setter-spinner {
+  display: inline-block; width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: #6c63ff; border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">CRM Closer</div>
+    </div>
+
+    <div class="role-switcher">
+      <button class="role-btn active" onclick="switchRole('closer')" id="role-closer">Vue Closer</button>
+      <button class="role-btn" onclick="switchRole('hos')" id="role-hos">Vue HoS</button>
+    </div>
+    <div style="padding:8px 16px;border-bottom:1px solid var(--border);">
+      <button class="role-btn" onclick="switchRole('setter')" id="role-setter" style="width:100%;background:linear-gradient(90deg,rgba(108,99,255,.12),rgba(255,101,132,.08));border-color:rgba(108,99,255,.35);color:#a78bfa;font-size:12px;">🎯 Vue Setter</button>
+    </div>
+
+    <!-- Closer Nav -->
+    <nav id="nav-closer">
+      <div class="nav-section">
+        <div class="nav-section-title">Mon activité</div>
+        <div class="nav-item active" onclick="showPage('ma-journee')"><span class="icon">🏠</span>Ma Journée <span class="badge">5</span></div>
+        <div class="nav-item" onclick="showPage('mon-pipeline')"><span class="icon">📋</span>Mon Pipeline</div>
+        <div class="nav-item" onclick="showPage('mes-leads')"><span class="icon">👥</span>Mes Leads</div>
+        <div class="nav-item" onclick="showPage('mes-calls')"><span class="icon">📞</span>Mes Calls</div>
+        <div class="nav-item" onclick="showPage('mes-fup')"><span class="icon">⏰</span>Mes Follow-ups <span class="badge">3</span></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Performance</div>
+        <div class="nav-item" onclick="showPage('mes-closes')"><span class="icon">💰</span>Mes Closes</div>
+        <div class="nav-item" onclick="showPage('ma-paye')"><span class="icon">💸</span>Ma Paye</div>
+        <div class="nav-item" onclick="showPage('mes-stats')"><span class="icon">📊</span>Mes Stats</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Ressources</div>
+        <div class="nav-item" onclick="showPage('templates')"><span class="icon">📝</span>Templates</div>
+        <div class="nav-item" onclick="showPage('classement')"><span class="icon">🏆</span>Classement</div>
+      </div>
+    </nav>
+
+    <!-- Setter Nav -->
+    <nav id="nav-setter" style="display:none;">
+      <div class="nav-section">
+        <div class="nav-section-title">Mon activité</div>
+        <div class="nav-item active" onclick="showPage('setter-journee')"><span class="icon">🏠</span>Ma Journée</div>
+        <div class="nav-item" onclick="showPage('setter-leads')"><span class="icon">👥</span>Tous les leads <span class="badge" id="setter-nav-badge">—</span></div>
+      </div>
+    </nav>
+
+    <!-- HoS Nav -->
+    <nav id="nav-hos" style="display:none;">
+      <div class="nav-section">
+        <div class="nav-section-title">Pilotage</div>
+        <div class="nav-item active" onclick="showPage('dashboard-hos')"><span class="icon">📊</span>Dashboard HoS</div>
+        <div class="nav-item" onclick="showPage('alertes')"><span class="icon">🚨</span>Alertes <span class="badge">7</span></div>
+        <div class="nav-item" onclick="showPage('pipeline-global')"><span class="icon">📋</span>Pipeline Global</div>
+        <div class="nav-item" onclick="showPage('leads-globaux')"><span class="icon">👥</span>Leads Globaux</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Suivi Setter</div>
+        <div class="nav-item" onclick="showPage('hos-suivi-setter');hosInitSetter()"><span class="icon">🎯</span>Suivi Setter <span class="badge" id="hos-setter-badge">—</span></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Statistiques</div>
+        <div class="nav-item" onclick="showPage('stats-globales')"><span class="icon">🌍</span>Stats Globales</div>
+        <div class="nav-item" onclick="showPage('stats-closers')"><span class="icon">👤</span>Stats par Closer</div>
+        <div class="nav-item" onclick="showPage('stats-offres')"><span class="icon">🎯</span>Stats par Offre</div>
+        <div class="nav-item" onclick="showPage('coaching')"><span class="icon">🎓</span>Coaching</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Gestion</div>
+        <div class="nav-item" onclick="showPage('equipe')"><span class="icon">👥</span>Équipe</div>
+        <div class="nav-item" onclick="showPage('commissions')"><span class="icon">💰</span>Commissions</div>
+        <div class="nav-item" onclick="showPage('facturation')"><span class="icon">🧾</span>Facturation</div>
+        <div class="nav-item" onclick="showPage('reporting')"><span class="icon">📈</span>Reporting</div>
+        <div class="nav-item" onclick="showPage('parametres')"><span class="icon">⚙️</span>Paramètres</div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar-mini" id="user-avatar">MF</div>
+      <div class="user-info">
+        <div class="user-name" id="user-name">Mike Fontaine</div>
+        <div class="user-role" id="user-role">Head of Sales</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="search-bar">
+        <span>🔍</span>
+        <span>Rechercher un lead, un closer, une action...</span>
+        <kbd>⌘K</kbd>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn">🌙</button>
+        <button class="icon-btn">🔔<span class="notif-dot"></span></button>
+        <button class="icon-btn">⚙️</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- PAGE: MA JOURNÉE (CLOSER) -->
+      <div class="page active" id="page-ma-journee">
+        <div class="page-header">
+          <div class="page-title">Ma Journée 👋</div>
+          <div class="page-subtitle">Samedi 16 mai 2026 — Tout ce que tu dois faire aujourd'hui</div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card featured">
+            <div class="kpi-label">Commission ce mois</div>
+            <div class="kpi-value">2 314 €</div>
+            <div class="kpi-sub up">↗ Encore 1 close pour passer à 10%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Closes du mois</div>
+            <div class="kpi-value">3 / 8</div>
+            <div class="kpi-sub">Objectif mensuel</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">CA encaissé</div>
+            <div class="kpi-value">8 900 €</div>
+            <div class="kpi-sub up">↗ +12% vs mois dernier</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Taux closing R2→Close</div>
+            <div class="kpi-value">42%</div>
+            <div class="kpi-sub up">↗ Au-dessus moyenne équipe</div>
+          </div>
+        </div>
+
+        <div class="alert alert-danger">
+          <span class="alert-icon">🔥</span>
+          <div>
+            <strong>Lead très chaud sans action depuis 26h !</strong><br>
+            <span style="color:var(--text-secondary);">Marina Hijosa (Kokatoo) — Devait te recontacter après avoir vu sa banque samedi matin. Contacte-la avant 12h.</span>
+          </div>
+          <button class="btn-small btn-primary">Voir la fiche →</button>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div class="section-title">📞 Mes calls du jour <span class="count">4</span></div>
+            <div class="calls-list">
+              <div class="call-item">
+                <div class="call-time">10:00</div>
+                <div class="call-info">
+                  <div class="call-name">Christine Saluard</div>
+                  <div class="call-meta"><span class="tag tag-kokatoo">Kokatoo</span><span class="tag tag-r2">R2</span><span>Score 72</span></div>
+                </div>
+                <div class="call-actions">
+                  <button class="btn-small">Fiche</button>
+                  <button class="btn-small btn-primary">Rejoindre</button>
+                </div>
+              </div>
+              <div class="call-item">
+                <div class="call-time">11:30</div>
+                <div class="call-info">
+                  <div class="call-name">Sébastien Cornet</div>
+                  <div class="call-meta"><span class="tag tag-pff">PFF</span><span class="tag tag-r2">R2</span><span class="tag tag-hot">🔥 Hot</span></div>
+                </div>
+                <div class="call-actions">
+                  <button class="btn-small">Fiche</button>
+                  <button class="btn-small btn-primary">Rejoindre</button>
+                </div>
+              </div>
+              <div class="call-item">
+                <div class="call-time">14:00</div>
+                <div class="call-info">
+                  <div class="call-name">Aurélie Bernaud</div>
+                  <div class="call-meta"><span class="tag tag-kokatoo">Kokatoo</span><span class="tag tag-r1">R1</span><span>Score 65</span></div>
+                </div>
+                <div class="call-actions">
+                  <button class="btn-small">Fiche</button>
+                  <button class="btn-small btn-primary">Rejoindre</button>
+                </div>
+              </div>
+              <div class="call-item">
+                <div class="call-time">17:00</div>
+                <div class="call-info">
+                  <div class="call-name">Marina Hijosa</div>
+                  <div class="call-meta"><span class="tag tag-kokatoo">Kokatoo</span><span class="tag tag-r3">R3</span><span class="tag tag-hot">🔥 Closing</span></div>
+                </div>
+                <div class="call-actions">
+                  <button class="btn-small">Fiche</button>
+                  <button class="btn-small btn-primary">Rejoindre</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title">⏰ FUP urgents <span class="count">3</span></div>
+            <div class="fup-item">
+              <div class="fup-priority priority-urgent"></div>
+              <div style="flex:1;">
+                <div style="font-weight:500;">François Landuré</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">FUP paiement non reçu — 48h de retard</div>
+              </div>
+              <button class="btn-small btn-primary">Relancer</button>
+            </div>
+            <div class="fup-item">
+              <div class="fup-priority priority-high"></div>
+              <div style="flex:1;">
+                <div style="font-weight:500;">Léa Andron</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">FUP financement — indemnités mi-juin</div>
+              </div>
+              <button class="btn-small">WA</button>
+            </div>
+            <div class="fup-item">
+              <div class="fup-priority priority-normal"></div>
+              <div style="flex:1;">
+                <div style="font-weight:500;">Ophélie Martin</div>
+                <div style="font-size:11px;color:var(--text-tertiary);">FUP J+7 stand-by — relance soft</div>
+              </div>
+              <button class="btn-small">Note</button>
+            </div>
+
+            <div class="section-title" style="margin-top:20px;">🎯 Progression primes</div>
+            <div class="detail-card" style="padding:14px;">
+              <div class="progress-block">
+                <div class="progress-header">
+                  <span class="progress-label">Prime CA 16 000 €</span>
+                  <span class="progress-value">8 900 / 16 000 €</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill amber" style="width:55%;"></div></div>
+                <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Encore 7 100 € pour débloquer +500 €</div>
+              </div>
+              <div class="progress-block">
+                <div class="progress-header">
+                  <span class="progress-label">Prime FUP x5</span>
+                  <span class="progress-value">2 / 5</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:40%;"></div></div>
+                <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">3 closes FUP de plus pour +400 €</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: MON PIPELINE -->
+      <div class="page" id="page-mon-pipeline">
+        <div class="page-header">
+          <div class="page-title">Mon Pipeline</div>
+          <div class="page-subtitle">Vue tableau style Monday — 24 leads actifs</div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+          <button class="btn-small btn-primary">+ Nouveau lead</button>
+          <button class="btn-small">📊 Vue tableau</button>
+          <button class="btn-small">📋 Vue Kanban</button>
+          <button class="btn-small">🔍 Filtres</button>
+          <button class="btn-small">Grouper par : Statut ▼</button>
+        </div>
+
+        <div class="pipeline-table">
+          <div class="pipeline-header-row">
+            <div></div>
+            <div>Nom</div>
+            <div>Statut</div>
+            <div>Offre</div>
+            <div>Dernier contact</div>
+            <div>Prochaine action</div>
+            <div>Montant</div>
+            <div>Score</div>
+            <div></div>
+          </div>
+
+          <div class="pipeline-group-header">
+            <span class="status-dot status-bleu"></span>
+            <span>R2 planifié</span>
+            <span style="color:var(--text-tertiary);margin-left:auto;">3 leads · 11 400 € potentiel</span>
+          </div>
+          <div class="pipeline-row">
+            <input type="checkbox">
+            <div>
+              <div class="name">Christine Saluard</div>
+              <div class="email">c.veyret-picot@free.fr</div>
+            </div>
+            <div><span class="status-pill" style="background:rgba(96,165,250,0.15);color:var(--info);"><span class="status-dot status-bleu"></span>R2 planifié</span></div>
+            <div><span class="tag tag-kokatoo">Kokatoo</span></div>
+            <div>14/05 · R1</div>
+            <div>R2 — 16/05 10:00</div>
+            <div>1 900 €</div>
+            <div><div class="score-bar"><div class="score-fill" style="width:72%;"></div></div></div>
+            <div>•••</div>
+          </div>
+          <div class="pipeline-row">
+            <input type="checkbox">
+            <div>
+              <div class="name">Sébastien Cornet</div>
+              <div class="email">scornet@gmail.com</div>
+            </div>
+            <div><span class="status-pill" style="background:rgba(96,165,250,0.15);color:var(--info);"><span class="status-dot status-bleu"></span>R2 planifié</span></div>
+            <div><span class="tag tag-pff">PFF</span></div>
+            <div>13/05 · R1</div>
+            <div>R2 — 16/05 11:30 🔥</div>
+            <div>5 500 €</div>
+            <div><div class="score-bar"><div class="score-fill" style="width:85%;"></div></div></div>
+            <div>•••</div>
+          </div>
+
+          <div class="pipeline-group-header">
+            <span class="status-dot status-orange"></span>
+            <span>R3 / Closing</span>
+            <span style="color:var(--text-tertiary);margin-left:auto;">2 leads · 7 400 € potentiel</span>
+          </div>
+          <div class="pipeline-row">
+            <input type="checkbox">
+            <div>
+              <div class="name">Marina Hijosa</div>
+              <div class="email">m.hijosa@gmail.com</div>
+            </div>
+            <div><span class="status-pill" style="background:rgba(251,146,60,0.15);color:#FB923C;"><span class="status-dot status-orange"></span>R3 / Closing</span></div>
+            <div><span class="tag tag-kokatoo">Kokatoo</span></div>
+            <div>15/05 · WA</div>
+            <div>R3 — 19/05 17:00 🔥</div>
+            <div>1 900 €</div>
+            <div><div class="score-bar"><div class="score-fill" style="width:92%;"></div></div></div>
+            <div>•••</div>
+          </div>
+          <div class="pipeline-row">
+            <input type="checkbox">
+            <div>
+              <div class="name">Samira Belkacem</div>
+              <div class="email">samira.b@gmail.com</div>
+            </div>
+            <div><span class="status-pill" style="background:rgba(251,146,60,0.15);color:#FB923C;"><span class="status-dot status-orange"></span>R3 / Closing</span></div>
+            <div><span class="tag tag-pff">PFF</span></div>
+            <div>13/05 · R2</div>
+            <div>R3 — 17/05 14:00</div>
+            <div>5 500 €</div>
+            <div><div class="score-bar"><div class="score-fill" style="width:88%;"></div></div></div>
+            <div>•••</div>
+          </div>
+
+          <div class="pipeline-group-header">
+            <span class="status-dot status-gris"></span>
+            <span>Stand-by</span>
+            <span style="color:var(--text-tertiary);margin-left:auto;">2 leads</span>
+          </div>
+          <div class="pipeline-row">
+            <input type="checkbox">
+            <div>
+              <div class="name">Léa Andron</div>
+              <div class="email">lea.andron@hotmail.fr</div>
+            </div>
+            <div><span class="status-pill" style="background:rgba(107,114,128,0.2);color:#9CA3AF;"><span class="status-dot status-gris"></span>Stand-by</span></div>
+            <div><span class="tag tag-kokatoo">Kokatoo</span></div>
+            <div>12/05 · WA</div>
+            <div>FUP — Mi-juin (indemnités)</div>
+            <div>1 900 €</div>
+            <div><div class="score-bar"><div class="score-fill" style="width:65%;"></div></div></div>
+            <div>•••</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: MA PAYE -->
+      <div class="page" id="page-ma-paye">
+        <div class="page-header">
+          <div class="page-title">Ma Paye 💸</div>
+          <div class="page-subtitle">Calcul temps réel — Mai 2026</div>
+        </div>
+
+        <div class="commission-card">
+          <div class="commission-label">Total brut à percevoir ce mois</div>
+          <div class="commission-total">2 314 €</div>
+          <div class="kpi-sub up">↗ +18% vs avril 2026</div>
+          <div class="commission-detail">
+            <div class="commission-mini">
+              <div class="commission-mini-label">Commissions</div>
+              <div class="commission-mini-value">2 314 €</div>
+            </div>
+            <div class="commission-mini">
+              <div class="commission-mini-label">Primes</div>
+              <div class="commission-mini-value">0 €</div>
+            </div>
+            <div class="commission-mini">
+              <div class="commission-mini-label">Bonus</div>
+              <div class="commission-mini-value">0 €</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">📋 Détail des closes du mois <span class="count">3</span></div>
+          <div class="pipeline-table">
+            <div class="pipeline-header-row" style="grid-template-columns:60px 1fr 1fr 1fr 1fr 80px 1fr;">
+              <div>Date</div><div>Client</div><div>Offre</div><div>CA TTC</div><div>CA HT</div><div>Taux</div><div>Commission</div>
+            </div>
+            <div class="pipeline-row" style="grid-template-columns:60px 1fr 1fr 1fr 1fr 80px 1fr;">
+              <div>02/05</div><div>Lucas Marin</div><div><span class="tag tag-kokatoo">Kokatoo</span></div><div>1 900 €</div><div>1 583 €</div><div><span class="tag" style="background:rgba(107,114,128,0.2);color:#9CA3AF;">8%</span></div><div style="font-weight:600;">127 €</div>
+            </div>
+            <div class="pipeline-row" style="grid-template-columns:60px 1fr 1fr 1fr 1fr 80px 1fr;">
+              <div>08/05</div><div>Pauline Dubois</div><div><span class="tag tag-pff">PFF</span></div><div>5 500 €</div><div>4 583 €</div><div><span class="tag" style="background:rgba(107,114,128,0.2);color:#9CA3AF;">8%</span></div><div style="font-weight:600;">367 €</div>
+            </div>
+            <div class="pipeline-row" style="grid-template-columns:60px 1fr 1fr 1fr 1fr 80px 1fr;">
+              <div>14/05</div><div>Valérie Derrien</div><div><span class="tag tag-kokatoo">Kokatoo</span></div><div>1 900 €</div><div>1 583 €</div><div><span class="tag" style="background:rgba(107,114,128,0.2);color:#9CA3AF;">8%</span></div><div style="font-weight:600;">127 €</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div class="section-title">🎯 Progression primes CA</div>
+            <div class="detail-card">
+              <div class="progress-block">
+                <div class="progress-header">
+                  <span class="progress-label">+500 € si 16 000 € encaissé</span>
+                  <span class="progress-value">9 300 / 16 000 €</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill amber" style="width:58%;"></div></div>
+              </div>
+              <div class="progress-block">
+                <div class="progress-header">
+                  <span class="progress-label">+1 000 € si 26 000 € encaissé</span>
+                  <span class="progress-value">9 300 / 26 000 €</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill amber" style="width:36%;"></div></div>
+              </div>
+              <div class="progress-block">
+                <div class="progress-header">
+                  <span class="progress-label">+2 000 € si 40 000 € encaissé</span>
+                  <span class="progress-value">9 300 / 40 000 €</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill amber" style="width:23%;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="section-title">🔁 Progression primes FUP</div>
+            <div class="detail-card">
+              <div class="progress-block">
+                <div class="progress-header">
+                  <span class="progress-label">+400 € si 5 closes FUP</span>
+                  <span class="progress-value">2 / 5</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill amber" style="width:40%;"></div></div>
+              </div>
+              <div class="progress-block">
+                <div class="progress-header">
+                  <span class="progress-label">+1 000 € si 9 closes FUP</span>
+                  <span class="progress-value">2 / 9</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill amber" style="width:22%;"></div></div>
+              </div>
+            </div>
+
+            <div class="alert alert-warning" style="margin-top:16px;">
+              <span class="alert-icon">⚡</span>
+              <div>
+                <strong>Encore 1 close pour passer à 10% !</strong><br>
+                <span style="color:var(--text-secondary);font-size:12px;">Tu es à 3 closes ce mois. À partir du 4e close, TOUS tes closes passent rétroactivement à 10%. Tu gagnerais immédiatement 289 € de plus.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block" style="margin-top:24px;">
+          <div class="section-title">🧾 Facturation mensuelle</div>
+          <div class="detail-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-weight:600;margin-bottom:4px;">Facture mai 2026 — non disponible</div>
+                <div style="font-size:12px;color:var(--text-tertiary);">Disponible le 1er juin 2026. Sera pré-remplie automatiquement avec tous tes closes + primes du mois.</div>
+              </div>
+              <button class="btn-small">Voir historique</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: DASHBOARD HOS -->
+      <div class="page" id="page-dashboard-hos">
+        <div class="page-header">
+          <div class="page-title">Dashboard Head of Sales</div>
+          <div class="page-subtitle">Vue d'ensemble temps réel — Refresh toutes les 30s</div>
+        </div>
+
+        <div class="role-banner">
+          <div class="role-banner-icon">👑</div>
+          <div class="role-banner-text">
+            <div class="role-banner-title">Espace Head of Sales</div>
+            <div class="role-banner-desc">Accès complet aux données de toute l'équipe. Les closers ne voient pas ces stats.</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card featured">
+            <div class="kpi-label">CA encaissé ce mois</div>
+            <div class="kpi-value">22 600 €</div>
+            <div class="kpi-sub up">↗ +24% vs avril</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Closes équipe</div>
+            <div class="kpi-value">5</div>
+            <div class="kpi-sub">3 Kokatoo · 2 PFF</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Pipeline chaud</div>
+            <div class="kpi-value">15</div>
+            <div class="kpi-sub">R2/R3 cette semaine</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Taux closing global</div>
+            <div class="kpi-value">26%</div>
+            <div class="kpi-sub up">↗ +3pts vs sem.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">No-shows semaine</div>
+            <div class="kpi-value">12</div>
+            <div class="kpi-sub down">↘ Trop élevé</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Objectif mois</div>
+            <div class="kpi-value">75%</div>
+            <div class="kpi-sub">22 600 / 30 000 €</div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-title">👥 Performance équipe <span class="count">5 closers</span></div>
+          <div class="team-grid">
+            <div class="closer-card">
+              <div class="closer-card-header">
+                <div class="closer-avatar" style="background:linear-gradient(135deg,#185FA5,#60A5FA);">MF</div>
+                <div>
+                  <div style="font-weight:600;">Mike Fontaine</div>
+                  <div style="font-size:11px;color:var(--text-tertiary);">HoS + Closer</div>
+                </div>
+                <span class="tag tag-r1" style="margin-left:auto;">5 500€</span>
+              </div>
+              <div class="closer-stats-grid">
+                <div class="closer-stat"><div class="closer-stat-label">Closes</div><div class="closer-stat-value">1</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">CA</div><div class="closer-stat-value">5 500€</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">Taux</div><div class="closer-stat-value">22%</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">NS</div><div class="closer-stat-value">3</div></div>
+              </div>
+            </div>
+            <div class="closer-card">
+              <div class="closer-card-header">
+                <div class="closer-avatar" style="background:linear-gradient(135deg,#3C3489,#A78BFA);">AN</div>
+                <div>
+                  <div style="font-weight:600;">Anthony Naccache</div>
+                  <div style="font-size:11px;color:var(--text-tertiary);">Closer PFF</div>
+                </div>
+                <span class="tag" style="margin-left:auto;background:rgba(74,222,128,0.15);color:#4ADE80;">🏆</span>
+              </div>
+              <div class="closer-stats-grid">
+                <div class="closer-stat"><div class="closer-stat-label">Closes</div><div class="closer-stat-value">1</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">CA</div><div class="closer-stat-value">5 500€</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">Taux</div><div class="closer-stat-value">28%</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">NS</div><div class="closer-stat-value">2</div></div>
+              </div>
+            </div>
+            <div class="closer-card">
+              <div class="closer-card-header">
+                <div class="closer-avatar" style="background:linear-gradient(135deg,#085041,#4ADE80);">LS</div>
+                <div>
+                  <div style="font-weight:600;">Laurence S.</div>
+                  <div style="font-size:11px;color:var(--text-tertiary);">Closer Kokatoo</div>
+                </div>
+              </div>
+              <div class="closer-stats-grid">
+                <div class="closer-stat"><div class="closer-stat-label">Closes</div><div class="closer-stat-value">1</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">CA</div><div class="closer-stat-value">1 900€</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">Taux</div><div class="closer-stat-value">18%</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">NS</div><div class="closer-stat-value">3</div></div>
+              </div>
+            </div>
+            <div class="closer-card">
+              <div class="closer-card-header">
+                <div class="closer-avatar" style="background:linear-gradient(135deg,#72243E,#F472B6);">ME</div>
+                <div>
+                  <div style="font-weight:600;">Marie Elia P.</div>
+                  <div style="font-size:11px;color:var(--text-tertiary);">Closer Kokatoo</div>
+                </div>
+              </div>
+              <div class="closer-stats-grid">
+                <div class="closer-stat"><div class="closer-stat-label">Closes</div><div class="closer-stat-value">1</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">CA</div><div class="closer-stat-value">1 900€</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">Taux</div><div class="closer-stat-value">20%</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">NS</div><div class="closer-stat-value">2</div></div>
+              </div>
+            </div>
+            <div class="closer-card">
+              <div class="closer-card-header">
+                <div class="closer-avatar" style="background:linear-gradient(135deg,#712B13,#FB923C);">SA</div>
+                <div>
+                  <div style="font-weight:600;">Sarah Steffan</div>
+                  <div style="font-size:11px;color:var(--text-tertiary);">Closer Kokatoo (nouv.)</div>
+                </div>
+                <span class="tag tag-r1" style="margin-left:auto;">🌱</span>
+              </div>
+              <div class="closer-stats-grid">
+                <div class="closer-stat"><div class="closer-stat-label">Closes</div><div class="closer-stat-value">1</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">CA</div><div class="closer-stat-value">1 900€</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">Taux</div><div class="closer-stat-value">25%</div></div>
+                <div class="closer-stat"><div class="closer-stat-label">NS</div><div class="closer-stat-value">2</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <div class="section-title">🚨 Alertes critiques <span class="count">3</span></div>
+            <div class="alert alert-danger">
+              <span class="alert-icon">🔥</span>
+              <div>
+                <strong>Lead très chaud sans action — 26h</strong><br>
+                <span style="font-size:12px;color:var(--text-secondary);">Marina Hijosa (Sarah) — devait recontacter après banque samedi matin</span>
+              </div>
+            </div>
+            <div class="alert alert-warning">
+              <span class="alert-icon">⚠️</span>
+              <div>
+                <strong>FUP en retard 48h — François Landuré</strong><br>
+                <span style="font-size:12px;color:var(--text-secondary);">Anthony — paiement non reçu, attente DM matin</span>
+              </div>
+            </div>
+            <div class="alert alert-warning">
+              <span class="alert-icon">📉</span>
+              <div>
+                <strong>Taux no-show élevé Laurence</strong><br>
+                <span style="font-size:12px;color:var(--text-secondary);">3 NS cette semaine sur 7 RDV — coaching à programmer</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="section-title">📊 Pipeline health</div>
+            <div class="detail-card">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span>Lead entrant</span><span style="font-weight:600;">42</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span>R1 fait</span><span style="font-weight:600;">28 (67%)</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:67%;"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span>R2 fait</span><span style="font-weight:600;">15 (54%)</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:54%;"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span>R3 fait</span><span style="font-weight:600;">8 (53%)</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:53%;"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span>Close</span><span style="font-weight:600;color:var(--success);">5 (63%)</span></div>
+                <div class="progress-bar"><div class="progress-fill amber" style="width:63%;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTRES PAGES (placeholders) -->
+      <div class="page" id="page-mes-leads"><div class="page-header"><div class="page-title">Mes Leads</div></div><div class="empty-state">Vue liste détaillée de tous mes leads avec filtres avancés (offre, statut, score, date)</div></div>
+      <div class="page" id="page-mes-calls"><div class="page-header"><div class="page-title">Mes Calls</div></div><div class="empty-state">Historique de tous mes R1/R2/R3 avec transcripts Fathom et résumés IA</div></div>
+      <div class="page" id="page-mes-fup"><div class="page-header"><div class="page-title">Mes Follow-ups</div></div><div class="empty-state">Liste de tous mes FUP triés par urgence (rouge / orange / vert)</div></div>
+      <div class="page" id="page-mes-closes"><div class="page-header"><div class="page-title">Mes Closes</div></div><div class="empty-state">Tous mes closes du mois + bouton "+ Nouveau close" pour saisie rapide avec calcul auto</div></div>
+      <div class="page" id="page-mes-stats"><div class="page-header"><div class="page-title">Mes Stats</div></div><div class="empty-state">Mes performances perso : taux closing, NS, panier moyen, top objections, comparatif vs équipe</div></div>
+      <div class="page" id="page-templates"><div class="page-header"><div class="page-title">Templates</div></div><div class="empty-state">Bibliothèque de scripts SMS/WA personnalisables avec variables [Prénom] [Offre] [Montant]</div></div>
+      <div class="page" id="page-classement"><div class="page-header"><div class="page-title">Classement</div></div><div class="empty-state">Leaderboard équipe avec badges et jalons motivants</div></div>
+      <div class="page" id="page-alertes"><div class="page-header"><div class="page-title">Centre d'alertes HoS</div></div><div class="empty-state">Toutes les alertes critiques en un seul endroit</div></div>
+      <!-- ══════════════════════════════════════
+           PAGE SETTER — MA JOURNÉE
+      ══════════════════════════════════════ -->
+      <div class="page" id="page-setter-journee">
+        <div class="page-header">
+          <div class="page-title">Ma Journée 🎯</div>
+          <div class="page-subtitle" id="setter-journee-date">Chargement...</div>
+        </div>
+
+        <div class="role-banner" style="background:linear-gradient(90deg,rgba(108,99,255,.1),rgba(255,101,132,.05));border-color:rgba(108,99,255,.4);">
+          <div class="role-banner-icon" style="background:linear-gradient(135deg,#6c63ff,#ff6584);">🎯</div>
+          <div class="role-banner-text">
+            <div class="role-banner-title">Espace Setter — Cailleau Education</div>
+            <div class="role-banner-desc">Tes priorités du jour, leads à traiter et suivi de performance.</div>
+          </div>
+          <div id="setter-j-sync" style="font-size:11px;color:var(--text-tertiary);white-space:nowrap;">⏳ Sync...</div>
+        </div>
+
+        <!-- KPI du jour -->
+        <div class="kpi-grid" id="setter-j-kpis">
+          <div class="kpi-card featured">
+            <div class="kpi-label">Total leads à traiter</div>
+            <div class="kpi-value" id="sj-total">—</div>
+            <div class="kpi-sub">Tous statuts confondus</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Sans étiquette</div>
+            <div class="kpi-value" id="sj-no-label" style="color:var(--warning);">—</div>
+            <div class="kpi-sub down">À qualifier en priorité</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">RDV pris ce mois</div>
+            <div class="kpi-value" id="sj-rdv" style="color:var(--success);">—</div>
+            <div class="kpi-sub up">↗ Leads qualifiés transmis</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">À relancer</div>
+            <div class="kpi-value" id="sj-relancer" style="color:var(--accent);">—</div>
+            <div class="kpi-sub down">Action requise aujourd'hui</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Rappels programmés</div>
+            <div class="kpi-value" id="sj-rappel" style="color:var(--info);">—</div>
+            <div class="kpi-sub">À contacter selon horaire</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Ne répond pas</div>
+            <div class="kpi-value" id="sj-nrp" style="color:var(--text-tertiary);">—</div>
+            <div class="kpi-sub">À relancer à froid</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <!-- Priorités du jour -->
+          <div>
+            <div class="section-title">🔥 Priorités du jour <span class="count" id="sj-prio-count">0</span></div>
+            <div id="sj-priority-list">
+              <div style="text-align:center;padding:30px;color:var(--text-tertiary);">
+                <div class="setter-spinner"></div>
+                <div style="margin-top:10px;font-size:12px;">Chargement...</div>
+              </div>
+            </div>
+            <div style="margin-top:10px;">
+              <button class="btn-small btn-primary" onclick="showPage('setter-leads')">Voir tous les leads →</button>
+            </div>
+          </div>
+
+          <!-- Progression étiquettes -->
+          <div>
+            <div class="section-title">📊 Répartition des leads</div>
+            <div class="detail-card" id="sj-repartition">
+              <div style="text-align:center;padding:30px;color:var(--text-tertiary);">
+                <div class="setter-spinner"></div>
+              </div>
+            </div>
+
+            <div class="section-title" style="margin-top:16px;">⚡ Actions rapides</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <button class="btn-small btn-primary" onclick="setterFilterLabel(document.querySelector('.lf-btn[data-lf=\\'a_relancer\\']'),'a_relancer');showPage('setter-leads')" style="text-align:left;padding:10px 14px;">
+                🔄 Voir les leads à relancer
+              </button>
+              <button class="btn-small" onclick="setterFilterLabel(document.querySelector('.lf-btn[data-lf=\\'rdv_pris\\']'),'rdv_pris');showPage('setter-leads')" style="text-align:left;padding:10px 14px;">
+                ✅ Voir les RDV pris
+              </button>
+              <button class="btn-small" onclick="setterFilterLabel(document.querySelector('.lf-btn[data-lf=\\'\\']'),'');setterFilterStatus('POTENTIAL');showPage('setter-leads')" style="text-align:left;padding:10px 14px;">
+                📞 Leads à contacter (Potential)
+              </button>
+              <button class="btn-small" onclick="refreshSetterData()" style="text-align:left;padding:10px 14px;">
+                🔄 Sync iClosed maintenant
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           PAGE HoS — SUIVI SETTER
+      ══════════════════════════════════════ -->
+      <div class="page" id="page-hos-suivi-setter">
+        <div class="page-header">
+          <div class="page-title">Suivi Setter</div>
+          <div class="page-subtitle">Vue complète de l'activité setter — Cailleau Education</div>
+        </div>
+
+        <div class="role-banner">
+          <div class="role-banner-icon">👑</div>
+          <div class="role-banner-text">
+            <div class="role-banner-title">Espace Head of Sales — Suivi Setter</div>
+            <div class="role-banner-desc">Accès complet : leads iClosed, étiquettes setter, stats de conversion.</div>
+          </div>
+          <div id="hos-setter-sync-status" style="font-size:11px;color:var(--text-tertiary);white-space:nowrap;">⏳ Sync...</div>
+        </div>
+
+        <!-- KPI HoS setter -->
+        <div class="kpi-grid">
+          <div class="kpi-card featured">
+            <div class="kpi-label">Total leads iClosed</div>
+            <div class="kpi-value" id="hos-s-total">—</div>
+            <div class="kpi-sub">Questionnaire rempli, sans RDV</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">RDV pris par le setter</div>
+            <div class="kpi-value" id="hos-s-rdv" style="color:var(--success);">—</div>
+            <div class="kpi-sub up">↗ Leads transmis aux closers</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Taux conversion setter</div>
+            <div class="kpi-value" id="hos-s-taux">—</div>
+            <div class="kpi-sub">RDV pris / total contactés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Leads non traités</div>
+            <div class="kpi-value" id="hos-s-untreated" style="color:var(--warning);">—</div>
+            <div class="kpi-sub down">Sans étiquette setter</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">En cours (relances)</div>
+            <div class="kpi-value" id="hos-s-inprogress" style="color:var(--info);">—</div>
+            <div class="kpi-sub">Contacté + À relancer + SMS</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Perdus / injoignables</div>
+            <div class="kpi-value" id="hos-s-lost" style="color:var(--accent);">—</div>
+            <div class="kpi-sub">Pas intéressé + Mauvais num.</div>
+          </div>
+        </div>
+
+        <!-- Répartition + Progression -->
+        <div class="two-col" style="margin-bottom:24px;">
+          <div>
+            <div class="section-title">📊 Répartition par étiquette</div>
+            <div class="detail-card" id="hos-setter-repartition">
+              <div style="text-align:center;padding:30px;color:var(--text-tertiary);">
+                <div class="setter-spinner"></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="section-title">🏷️ Répartition par statut iClosed</div>
+            <div class="detail-card" id="hos-setter-statuts">
+              <div style="text-align:center;padding:30px;color:var(--text-tertiary);">
+                <div class="setter-spinner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tableau leads complet (lecture HoS) -->
+        <div class="section-title">👥 Tous les leads setter <span class="count" id="hos-setter-table-count">—</span></div>
+
+        <!-- Sync bar HoS -->
+        <div class="setter-sync-bar" style="margin-bottom:12px;">
+          <div>
+            <span id="hos-setter-sync-icon">⏳</span>
+            <span class="setter-sync-status loading" id="hos-setter-sync-msg">Chargement...</span>
+          </div>
+          <button class="setter-refresh-btn" id="hos-refresh-btn" onclick="hosRefreshSetter()" disabled>
+            🔄 Rafraîchir
+          </button>
+        </div>
+
+        <!-- Filtres rapides HoS -->
+        <div class="setter-label-bar" style="margin-bottom:12px;">
+          <span class="setter-label-title">Filtrer :</span>
+          <button class="lf-btn lf-active" data-lf-hos="" onclick="hosFilterLabel(this,'')">Tous</button>
+          <button class="lf-btn" data-lf-hos="contacte" onclick="hosFilterLabel(this,'contacte')" style="color:#60a5fa;border-color:rgba(59,130,246,.3)">📞 Contacté</button>
+          <button class="lf-btn" data-lf-hos="rdv_pris" onclick="hosFilterLabel(this,'rdv_pris')" style="color:#4ade80;border-color:rgba(34,197,94,.3)">✅ RDV Pris</button>
+          <button class="lf-btn" data-lf-hos="a_relancer" onclick="hosFilterLabel(this,'a_relancer')" style="color:#fb923c;border-color:rgba(249,115,22,.3)">🔄 À relancer</button>
+          <button class="lf-btn" data-lf-hos="sms" onclick="hosFilterLabel(this,'sms')" style="color:#c084fc;border-color:rgba(168,85,247,.3)">💬 SMS</button>
+          <button class="lf-btn" data-lf-hos="rappel_prog" onclick="hosFilterLabel(this,'rappel_prog')" style="color:#2dd4bf;border-color:rgba(20,184,166,.3)">🕐 Rappel</button>
+          <button class="lf-btn" data-lf-hos="ne_repond_pas" onclick="hosFilterLabel(this,'ne_repond_pas')" style="color:#94a3b8;border-color:rgba(100,116,139,.3)">🔇 NRP</button>
+          <button class="lf-btn" data-lf-hos="pas_interesse" onclick="hosFilterLabel(this,'pas_interesse')" style="color:#f87171;border-color:rgba(239,68,68,.25)">❌ Pas intéressé</button>
+          <button class="lf-btn" data-lf-hos="mauvais_num" onclick="hosFilterLabel(this,'mauvais_num')" style="color:#fbbf24;border-color:rgba(245,158,11,.3)">🚫 Mauv. num.</button>
+        </div>
+
+        <!-- Recherche HoS -->
+        <div class="setter-toolbar" style="margin-bottom:12px;">
+          <div class="setter-search">
+            <span class="setter-search-icon">🔍</span>
+            <input type="text" id="hos-setter-search" placeholder="Rechercher nom, email, téléphone..." oninput="hosSetterApplyFilters()">
+          </div>
+          <select class="setter-select" id="hos-setter-sort" onchange="hosSetterApplyFilters()">
+            <option value="date-desc">Plus récent d'abord</option>
+            <option value="date-asc">Plus ancien d'abord</option>
+            <option value="priority">Qualifié d'abord</option>
+            <option value="name-asc">Nom A-Z</option>
+          </select>
+          <div class="setter-result">Résultats : <span id="hos-setter-result-count">—</span></div>
+        </div>
+
+        <!-- Tableau HoS (lecture seule, sans dropdown étiquette) -->
+        <div class="setter-tw">
+          <div id="hos-setter-loading" style="text-align:center;padding:40px;">
+            <div class="setter-spinner"></div>
+            <div style="margin-top:12px;color:var(--text-tertiary);font-size:13px;">Connexion à iClosed...</div>
+          </div>
+          <table class="setter-table" id="hos-setter-table" style="display:none;">
+            <thead>
+              <tr>
+                <th>NOM</th>
+                <th>TÉLÉPHONE</th>
+                <th>EMAIL</th>
+                <th>STATUT iClosed</th>
+                <th>FUNNEL</th>
+                <th>DATE</th>
+                <th>ÉTIQUETTE SETTER</th>
+              </tr>
+            </thead>
+            <tbody id="hos-setter-tbody"></tbody>
+          </table>
+          <div class="setter-no-data" id="hos-setter-no-data" style="display:none;">Aucun lead trouvé.</div>
+        </div>
+        <div class="setter-pagination" id="hos-setter-pagination"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           PAGE SETTER — LEADS iClosed
+      ══════════════════════════════════════ -->
+      <div class="page" id="page-setter-leads">
+        <div class="page-header">
+          <div class="page-title">🎯 CRM Setter — Leads sans RDV</div>
+          <div class="page-subtitle">Audit Analyse · Questionnaire rempli, aucun RDV · Cailleau Education</div>
+        </div>
+
+        <!-- Sync bar -->
+        <div class="setter-sync-bar">
+          <div>
+            <span id="setter-sync-icon">⏳</span>
+            <span class="setter-sync-status loading" id="setter-sync-status">Chargement des données iClosed...</span>
+          </div>
+          <button class="setter-refresh-btn" id="setter-refresh-btn" onclick="refreshSetterData()" disabled>
+            🔄 Rafraîchir
+          </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="setter-stats" id="setter-stats-grid">
+          <div class="sc s-all s-active" onclick="setterFilterStatus('ALL')">
+            <div class="sc-n" id="setter-count-all">—</div>
+            <div class="sc-l">Tous les leads</div>
+          </div>
+          <div class="sc s-pot" onclick="setterFilterStatus('POTENTIAL')">
+            <div class="sc-n" id="setter-count-pot">—</div>
+            <div class="sc-l">À contacter</div>
+          </div>
+          <div class="sc s-qua" onclick="setterFilterStatus('QUALIFIED')">
+            <div class="sc-n" id="setter-count-qua">—</div>
+            <div class="sc-l">Qualifiés</div>
+          </div>
+          <div class="sc s-dis" onclick="setterFilterStatus('DISQUALIFIED')">
+            <div class="sc-n" id="setter-count-dis">—</div>
+            <div class="sc-l">Disqualifiés</div>
+          </div>
+        </div>
+
+        <!-- Label filter bar -->
+        <div class="setter-label-bar">
+          <span class="setter-label-title">Étiquette :</span>
+          <button class="lf-btn lf-active" data-lf="" onclick="setterFilterLabel(this,'')">Toutes</button>
+          <button class="lf-btn" data-lf="contacte" onclick="setterFilterLabel(this,'contacte')" style="color:#60a5fa;border-color:rgba(59,130,246,.3)">📞 Contacté</button>
+          <button class="lf-btn" data-lf="rdv_pris" onclick="setterFilterLabel(this,'rdv_pris')" style="color:#4ade80;border-color:rgba(34,197,94,.3)">✅ RDV Pris</button>
+          <button class="lf-btn" data-lf="a_relancer" onclick="setterFilterLabel(this,'a_relancer')" style="color:#fb923c;border-color:rgba(249,115,22,.3)">🔄 À relancer</button>
+          <button class="lf-btn" data-lf="sms" onclick="setterFilterLabel(this,'sms')" style="color:#c084fc;border-color:rgba(168,85,247,.3)">💬 Conv. SMS</button>
+          <button class="lf-btn" data-lf="rappel_prog" onclick="setterFilterLabel(this,'rappel_prog')" style="color:#2dd4bf;border-color:rgba(20,184,166,.3)">🕐 Rappel prog.</button>
+          <button class="lf-btn" data-lf="ne_repond_pas" onclick="setterFilterLabel(this,'ne_repond_pas')" style="color:#94a3b8;border-color:rgba(100,116,139,.3)">🔇 Ne répond pas</button>
+          <button class="lf-btn" data-lf="pas_interesse" onclick="setterFilterLabel(this,'pas_interesse')" style="color:#f87171;border-color:rgba(239,68,68,.25)">❌ Pas intéressé</button>
+          <button class="lf-btn" data-lf="mauvais_num" onclick="setterFilterLabel(this,'mauvais_num')" style="color:#fbbf24;border-color:rgba(245,158,11,.3)">🚫 Mauvais num.</button>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="setter-toolbar">
+          <div class="setter-search">
+            <span class="setter-search-icon">🔍</span>
+            <input type="text" id="setter-search-input" placeholder="Rechercher nom, email, téléphone..." oninput="setterApplyFilters()">
+          </div>
+          <select class="setter-select" id="setter-sort" onchange="setterApplyFilters()">
+            <option value="date-desc">Plus récent d'abord</option>
+            <option value="date-asc">Plus ancien d'abord</option>
+            <option value="priority">Qualifié d'abord</option>
+            <option value="name-asc">Nom A-Z</option>
+          </select>
+          <div class="setter-result">Résultats : <span id="setter-result-count">—</span></div>
+        </div>
+
+        <!-- Table -->
+        <div class="setter-tw">
+          <div id="setter-loading" style="text-align:center;padding:40px;">
+            <div class="setter-spinner"></div>
+            <div style="margin-top:12px;color:var(--text-tertiary);font-size:13px;">Connexion à iClosed...</div>
+          </div>
+          <table class="setter-table" id="setter-table" style="display:none;">
+            <thead>
+              <tr>
+                <th>NOM</th>
+                <th>TÉLÉPHONE</th>
+                <th>EMAIL</th>
+                <th>STATUT iClosed</th>
+                <th>FUNNEL</th>
+                <th>DATE</th>
+                <th>ÉTIQUETTE SETTER</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="setter-tbody"></tbody>
+          </table>
+          <div class="setter-no-data" id="setter-no-data" style="display:none;">
+            Aucun lead trouvé avec ces filtres.
+          </div>
+        </div>
+
+        <div class="setter-pagination" id="setter-pagination"></div>
+
+        <!-- Dropdown étiquettes -->
+        <div class="s-etiq-dd" id="setterEtiqDD">
+          <div class="s-etiq-item" data-val="" onclick="setterSetLabel(event,'')"><span class="s-etiq-dot lc-none"></span>Aucune</div>
+          <div class="s-etiq-item" data-val="contacte" onclick="setterSetLabel(event,'contacte')"><span class="s-etiq-dot lc-contacte"></span>Contacté</div>
+          <div class="s-etiq-item" data-val="rdv_pris" onclick="setterSetLabel(event,'rdv_pris')"><span class="s-etiq-dot lc-rdv_pris"></span>RDV Pris</div>
+          <div class="s-etiq-item" data-val="a_relancer" onclick="setterSetLabel(event,'a_relancer')"><span class="s-etiq-dot lc-a_relancer"></span>À relancer</div>
+          <div class="s-etiq-item" data-val="sms" onclick="setterSetLabel(event,'sms')"><span class="s-etiq-dot lc-sms"></span>Conv. SMS</div>
+          <div class="s-etiq-item" data-val="rappel_prog" onclick="setterSetLabel(event,'rappel_prog')"><span class="s-etiq-dot lc-rappel_prog"></span>Rappel prog.</div>
+          <div class="s-etiq-item" data-val="ne_repond_pas" onclick="setterSetLabel(event,'ne_repond_pas')"><span class="s-etiq-dot lc-ne_repond_pas"></span>Ne répond pas</div>
+          <div class="s-etiq-item" data-val="pas_interesse" onclick="setterSetLabel(event,'pas_interesse')"><span class="s-etiq-dot lc-pas_interesse"></span>Pas intéressé</div>
+          <div class="s-etiq-item" data-val="mauvais_num" onclick="setterSetLabel(event,'mauvais_num')"><span class="s-etiq-dot lc-mauvais_num"></span>Mauvais num.</div>
+        </div>
+      </div>
+
+      <div class="page" id="page-pipeline-global"><div class="page-header"><div class="page-title">Pipeline Global</div></div><div class="empty-state">Vue tableau de TOUS les leads de TOUTE l'équipe avec filtres par closer</div></div>
+      <div class="page" id="page-leads-globaux"><div class="page-header"><div class="page-title">Leads Globaux</div></div><div class="empty-state">Liste complète, filtres avancés, possibilité de réassigner un lead à un autre closer</div></div>
+      <div class="page" id="page-stats-globales"><div class="page-header"><div class="page-title">Stats Globales</div></div><div class="empty-state">Tous les KPIs globaux avec filtres par période + forecast IA fin de mois</div></div>
+      <div class="page" id="page-stats-closers"><div class="page-header"><div class="page-title">Stats par Closer</div></div><div class="empty-state">Page dédiée par closer avec stats détaillées + comparatifs équipe</div></div>
+      <div class="page" id="page-stats-offres"><div class="page-header"><div class="page-title">Stats par Offre</div></div><div class="empty-state">Stats détaillées Kokatoo vs PFF (CA, panier moyen, taux, objections, sources)</div></div>
+      <div class="page" id="page-coaching"><div class="page-header"><div class="page-title">Coaching</div></div><div class="empty-state">Calls à débriefer, scores IA, snippets clés, bibliothèque de calls exemplaires</div></div>
+      <div class="page" id="page-equipe"><div class="page-header"><div class="page-title">Équipe</div></div><div class="empty-state">Gestion des closers et setters, attribution leads, permissions</div></div>
+      <div class="page" id="page-commissions"><div class="page-header"><div class="page-title">Commissions</div></div><div class="empty-state">Vue de toutes les commissions à valider/payer + paramétrage des règles</div></div>
+      <div class="page" id="page-facturation"><div class="page-header"><div class="page-title">Facturation</div></div><div class="empty-state">Validation des factures soumises par les closers le 1er du mois</div></div>
+      <div class="page" id="page-reporting"><div class="page-header"><div class="page-title">Reporting</div></div><div class="empty-state">Rapports hebdo automatiques pour Corentin (CEO) — généré chaque vendredi 19h</div></div>
+      <div class="page" id="page-parametres"><div class="page-header"><div class="page-title">Paramètres</div></div><div class="empty-state">Gestion utilisateurs, règles commission, paliers, primes, automatisations</div></div>
+
+    </div>
+  </main>
+</div>
+
+<div class="demo-notice">
+  <strong>💡 CRM Cailleau Education</strong><br>
+  3 vues : <strong>Closer</strong> · <strong>HoS</strong> · <strong>🎯 Setter</strong><br>
+  <span style="color:var(--success);">●</span> Vue Setter connectée à iClosed (cache 24h)
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   CLOSER CRM — Navigation
+══════════════════════════════════════ */
+let currentRole = 'closer';
+let currentPage = 'ma-journee';
+
+function switchRole(role) {
+  currentRole = role;
+  ['closer','hos','setter'].forEach(r => {
+    document.getElementById('role-' + r).classList.toggle('active', r === role);
+    document.getElementById('nav-' + r).style.display = r === role ? 'block' : 'none';
+  });
+  if (role === 'closer') {
+    document.getElementById('user-name').textContent = 'Anthony Naccache';
+    document.getElementById('user-role').textContent = 'Closer PFF';
+    document.getElementById('user-avatar').textContent = 'AN';
+    showPage('ma-journee');
+  } else if (role === 'hos') {
+    document.getElementById('user-name').textContent = 'Mike Fontaine';
+    document.getElementById('user-role').textContent = 'Head of Sales';
+    document.getElementById('user-avatar').textContent = 'MF';
+    showPage('dashboard-hos');
+  } else {
+    document.getElementById('user-name').textContent = 'Setter';
+    document.getElementById('user-role').textContent = 'CRM Setter';
+    document.getElementById('user-avatar').textContent = '🎯';
+    showPage('setter-journee');
+    initSetterPage().then(() => renderSetterJournee());
+  }
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+  const navItem = document.querySelector(`.nav-item[onclick*="${pageId}"]`);
+  if (navItem) navItem.classList.add('active');
+  currentPage = pageId;
+}
+
+/* ══════════════════════════════════════
+   SETTER CRM — iClosed API
+══════════════════════════════════════ */
+const ICLOSED_BASE = 'https://public.api.iclosed.io';
+const ICLOSED_TOKEN = 'iclosed_e63656a54e78730f3b19dc5ccf973ed2';
+const SETTER_CACHE_KEY  = 'crm_setter_data_v2';
+const SETTER_LABELS_KEY = 'crm_setter_labels_v1';
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24h en ms
+
+const LABEL_META = {
+  '':              { text: 'Aucune',       cls: 'lc-none' },
+  'contacte':      { text: 'Contacté',     cls: 'lc-contacte' },
+  'rdv_pris':      { text: 'RDV Pris',     cls: 'lc-rdv_pris' },
+  'a_relancer':    { text: 'À relancer',   cls: 'lc-a_relancer' },
+  'sms':           { text: 'Conv. SMS',    cls: 'lc-sms' },
+  'rappel_prog':   { text: 'Rappel prog.', cls: 'lc-rappel_prog' },
+  'ne_repond_pas': { text: 'Ne rép. pas',  cls: 'lc-ne_repond_pas' },
+  'pas_interesse': { text: 'Pas intéressé',cls: 'lc-pas_interesse' },
+  'mauvais_num':   { text: 'Mauvais num.', cls: 'lc-mauvais_num' }
+};
+
+let setterLeads = [];
+let setterStatusFilter = 'ALL';
+let setterLabelFilter  = '';
+let setterPage = 1;
+const SETTER_PER_PAGE = 50;
+let setterActiveId = null;
+let setterLabels = {};
+
+try { setterLabels = JSON.parse(localStorage.getItem(SETTER_LABELS_KEY) || '{}'); } catch(e) {}
+
+function saveSetterLabels() {
+  try { localStorage.setItem(SETTER_LABELS_KEY, JSON.stringify(setterLabels)); } catch(e) {}
+}
+function getSetterLabel(id) { return setterLabels[String(id)] || ''; }
+
+/* ---- Fetch iClosed avec pagination ---- */
+async function fetchFromIclosed() {
+  const allLeads = [];
+  let page = 0;
+  const limit = 200;
+
+  while (true) {
+    const url = `${ICLOSED_BASE}/v1/contacts?forSetters=true&limit=${limit}&page=${page}&orderColumn=createdAt&orderBy=desc`;
+    const resp = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${ICLOSED_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!resp.ok) throw new Error(`iClosed API ${resp.status}`);
+    const json = await resp.json();
+
+    // Support différentes structures de réponse
+    const contacts = Array.isArray(json) ? json
+      : (json.contacts || json.data || json.items || json.results || []);
+
+    if (!contacts.length) break;
+
+    contacts.forEach(c => {
+      const raw = c.createdAt || c.created_at || '';
+      const dt = raw ? new Date(raw) : null;
+      const dateStr = dt && !isNaN(dt)
+        ? `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`
+        : '';
+      const sortStr = dt && !isNaN(dt)
+        ? `${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}`
+        : '';
+
+      const status = (c.status || c.contactStatus || 'POTENTIAL').toUpperCase();
+
+      allLeads.push({
+        id:         c.id || c.contactId,
+        firstName:  c.firstName || c.first_name || '',
+        lastName:   c.lastName  || c.last_name  || '',
+        email:      c.email || '',
+        phone:      c.phone || c.phoneNumber || '',
+        status:     ['QUALIFIED','DISQUALIFIED','POTENTIAL'].includes(status) ? status : 'POTENTIAL',
+        funnel:     c.funnel || c.event?.name || c.eventName || '',
+        createdAt:  dateStr,
+        createdSort: sortStr,
+        setter:     c.owner?.name || c.setter?.name || c.setterName || ''
+      });
+    });
+
+    if (contacts.length < limit) break;
+    page++;
+    if (page > 20) break; // sécurité max 4000 leads
+  }
+  return allLeads;
+}
+
+/* ---- Init / Refresh ---- */
+let setterInitialized = false;
+
+async function initSetterPage() {
+  if (setterInitialized && setterLeads.length > 0) return;
+
+  // Vérifier le cache localStorage
+  try {
+    const cached = JSON.parse(localStorage.getItem(SETTER_CACHE_KEY) || 'null');
+    if (cached && cached.data && (Date.now() - cached.timestamp) < CACHE_TTL) {
+      setterLeads = cached.data;
+      setterInitialized = true;
+      setterRenderStats();
+      setterApplyFilters();
+      setSyncStatus('ok', `✅ iClosed · ${setterLeads.length} leads · Sync ${new Date(cached.timestamp).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}`);
+      document.getElementById('setter-loading').style.display = 'none';
+      document.getElementById('setter-refresh-btn').disabled = false;
+      return;
+    }
+  } catch(e) {}
+
+  await refreshSetterData();
+}
+
+async function refreshSetterData() {
+  const btn = document.getElementById('setter-refresh-btn');
+  btn.disabled = true;
+  document.getElementById('setter-loading').style.display = 'block';
+  document.getElementById('setter-table').style.display = 'none';
+  document.getElementById('setter-no-data').style.display = 'none';
+  setSyncStatus('loading', '⏳ Connexion à iClosed en cours...');
+
+  try {
+    const leads = await fetchFromIclosed();
+    setterLeads = leads;
+    setterInitialized = true;
+
+    // Sauvegarder en cache
+    try {
+      localStorage.setItem(SETTER_CACHE_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        data: leads
+      }));
+    } catch(e) {}
+
+    setterRenderStats();
+    setterApplyFilters();
+    const now = new Date().toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    setSyncStatus('ok', `✅ iClosed · ${leads.length} leads · Sync ${now}`);
+    document.getElementById('setter-loading').style.display = 'none';
+    btn.disabled = false;
+
+  } catch(err) {
+    console.error('iClosed fetch error:', err);
+    // Tenter de charger le cache expiré en fallback
+    try {
+      const cached = JSON.parse(localStorage.getItem(SETTER_CACHE_KEY) || 'null');
+      if (cached && cached.data) {
+        setterLeads = cached.data;
+        setterRenderStats();
+        setterApplyFilters();
+        const ago = Math.round((Date.now() - cached.timestamp) / 3600000);
+        setSyncStatus('err', `⚠️ API inaccessible — Cache il y a ${ago}h · ${cached.data.length} leads`);
+        document.getElementById('setter-loading').style.display = 'none';
+        btn.disabled = false;
+        return;
+      }
+    } catch(e2) {}
+
+    setSyncStatus('err', `❌ Erreur iClosed : ${err.message}. Vérifiez votre connexion ou la clé API.`);
+    document.getElementById('setter-loading').innerHTML = `
+      <div style="color:var(--accent);font-size:13px;">❌ Impossible de charger les données iClosed.<br>
+      <small style="color:var(--text-tertiary);">${err.message}</small></div>`;
+    btn.disabled = false;
+  }
+}
+
+function setSyncStatus(type, msg) {
+  const el = document.getElementById('setter-sync-status');
+  el.textContent = msg;
+  el.className = 'setter-sync-status ' + type;
+}
+
+/* ---- Stats ---- */
+function setterRenderStats() {
+  const all = setterLeads.length;
+  const pot = setterLeads.filter(l => l.status === 'POTENTIAL').length;
+  const qua = setterLeads.filter(l => l.status === 'QUALIFIED').length;
+  const dis = setterLeads.filter(l => l.status === 'DISQUALIFIED').length;
+  document.getElementById('setter-count-all').textContent = all;
+  document.getElementById('setter-count-pot').textContent = pot;
+  document.getElementById('setter-count-qua').textContent = qua;
+  document.getElementById('setter-count-dis').textContent = dis;
+  const badge = document.getElementById('setter-nav-badge');
+  if (badge) badge.textContent = all;
+}
+
+/* ---- Filtres ---- */
+function setterFilterStatus(s) {
+  setterStatusFilter = s;
+  setterPage = 1;
+  document.querySelectorAll('.setter-stats .sc').forEach(c => c.classList.remove('s-active'));
+  const map = { ALL:'s-all', POTENTIAL:'s-pot', QUALIFIED:'s-qua', DISQUALIFIED:'s-dis' };
+  const el = document.querySelector('.setter-stats .'+map[s]);
+  if (el) el.classList.add('s-active');
+  setterApplyFilters();
+}
+
+function setterFilterLabel(btn, lbl) {
+  setterLabelFilter = lbl;
+  setterPage = 1;
+  document.querySelectorAll('.lf-btn').forEach(b => b.classList.remove('lf-active'));
+  btn.classList.add('lf-active');
+  setterApplyFilters();
+}
+
+function setterGetFiltered() {
+  let leads = setterLeads;
+  if (setterStatusFilter !== 'ALL')
+    leads = leads.filter(l => l.status === setterStatusFilter);
+  if (setterLabelFilter !== '')
+    leads = leads.filter(l => getSetterLabel(l.id) === setterLabelFilter);
+  const q = (document.getElementById('setter-search-input')?.value || '').toLowerCase();
+  if (q) leads = leads.filter(l =>
+    (l.firstName+' '+l.lastName).toLowerCase().includes(q) ||
+    (l.email||'').toLowerCase().includes(q) ||
+    (l.phone||'').includes(q)
+  );
+  const sort = document.getElementById('setter-sort')?.value || 'date-desc';
+  leads = leads.slice();
+  if (sort==='date-desc') leads.sort((a,b) => b.createdSort.localeCompare(a.createdSort));
+  else if (sort==='date-asc') leads.sort((a,b) => a.createdSort.localeCompare(b.createdSort));
+  else if (sort==='name-asc') leads.sort((a,b) => (a.firstName+a.lastName).localeCompare(b.firstName+b.lastName));
+  else if (sort==='priority') {
+    const o = {QUALIFIED:0,POTENTIAL:1,DISQUALIFIED:2};
+    leads.sort((a,b) => (o[a.status]||1)-(o[b.status]||1));
+  }
+  return leads;
+}
+
+function setterApplyFilters() {
+  const filtered = setterGetFiltered();
+  const countEl = document.getElementById('setter-result-count');
+  if (countEl) countEl.textContent = filtered.length;
+  const tp = Math.ceil(filtered.length / SETTER_PER_PAGE);
+  setterRenderPage(filtered, setterPage > tp ? 1 : setterPage);
+}
+
+/* ---- Rendu tableau ---- */
+function setterRenderPage(filtered, page) {
+  setterPage = page;
+  const tbody  = document.getElementById('setter-tbody');
+  const noData = document.getElementById('setter-no-data');
+  const table  = document.getElementById('setter-table');
+  if (!tbody) return;
+
+  const total      = filtered.length;
+  const totalPages = Math.ceil(total / SETTER_PER_PAGE);
+  const start      = (page-1) * SETTER_PER_PAGE;
+  const pageLeads  = filtered.slice(start, start + SETTER_PER_PAGE);
+
+  if (!pageLeads.length) {
+    table.style.display = 'none';
+    noData.style.display = 'block';
+    document.getElementById('setter-pagination').innerHTML = '';
+    return;
+  }
+  table.style.display = 'table';
+  noData.style.display = 'none';
+
+  const today = new Date(), d7 = new Date(), d30 = new Date();
+  d7.setDate(today.getDate()-7); d30.setDate(today.getDate()-30);
+
+  tbody.innerHTML = pageLeads.map(l => {
+    const name  = (l.firstName+' '+l.lastName).trim() || 'Inconnu';
+    const phone = (l.phone||'').replace(/\s/g,'');
+    const wa    = phone.replace('+','');
+    let dcCls = 's-dc';
+    if (l.createdSort && l.createdSort.length >= 8) {
+      const dt = new Date(
+        parseInt(l.createdSort.slice(0,4)),
+        parseInt(l.createdSort.slice(4,6))-1,
+        parseInt(l.createdSort.slice(6,8))
+      );
+      if (dt >= d7) dcCls = 's-dc s-recent';
+      else if (dt >= d30) dcCls = 's-dc s-old';
+    }
+    const rowCls = l.status==='QUALIFIED' ? 's-row-qua' : l.status==='POTENTIAL' ? 's-row-pot' : '';
+    const eok    = l.email && l.email.includes('@');
+    const sl     = l.status==='QUALIFIED' ? 'Qualifié' : l.status==='POTENTIAL' ? 'À contacter' : 'Disqualifié';
+    const bc     = l.status==='QUALIFIED' ? 's-bQ' : l.status==='POTENTIAL' ? 's-bP' : 's-bD';
+    const ed     = eok ? (l.email.length>26 ? l.email.slice(0,24)+'...' : l.email) : '';
+    const lbl    = getSetterLabel(l.id);
+    const lmeta  = LABEL_META[lbl] || LABEL_META[''];
+
+    return `<tr class="${rowCls}">
+      <td><div class="s-nm">${escH(name)}</div>${l.setter?`<div class="s-ns">${escH(l.setter)}</div>`:''}</td>
+      <td>${phone
+        ? `<a class="s-pl" href="tel:${escH(phone)}">${escH(l.phone)}</a>`
+        : '<span style="color:var(--text-tertiary)">-</span>'}</td>
+      <td>${eok
+        ? `<a class="s-el" href="mailto:${escH(l.email)}" title="${escH(l.email)}">${escH(ed)}</a>`
+        : '<span style="color:var(--text-tertiary)">-</span>'}</td>
+      <td><span class="s-badge ${bc}">${sl}</span></td>
+      <td><span style="font-size:12px;color:var(--text-tertiary)">${escH(l.funnel||'-')}</span></td>
+      <td><span class="${dcCls}">${l.createdAt||'-'}</span></td>
+      <td>
+        <div class="s-etiq-wrap">
+          <button class="s-etiq-sel" data-id="${l.id}" onclick="setterOpenDD(this,${l.id})">
+            <span class="s-etiq-dot ${lmeta.cls}"></span>
+            <span>${lmeta.text}</span>
+            <span class="s-etiq-arrow">&#9660;</span>
+          </button>
+        </div>
+      </td>
+      <td>
+        ${phone ? `<a class="s-ab wa" href="https://wa.me/${wa}" target="_blank">WA</a>` : ''}
+        ${phone ? `<a class="s-ab" href="tel:${escH(phone)}">📞</a>` : ''}
+        ${eok   ? `<a class="s-ab" href="mailto:${escH(l.email)}">✉️</a>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Pagination
+  const pag = document.getElementById('setter-pagination');
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+  let html = `<button class="s-pb" onclick="setterGoPage(${page-1})" ${page<=1?'disabled':''}>←</button>`;
+  const w = 2;
+  for (let i=1; i<=totalPages; i++) {
+    if (i===1 || i===totalPages || (i>=page-w && i<=page+w)) {
+      html += `<button class="s-pb ${i===page?'s-active':''}" onclick="setterGoPage(${i})">${i}</button>`;
+    } else if (i===page-w-1 || i===page+w+1) {
+      html += `<span class="s-pi">…</span>`;
+    }
+  }
+  html += `<button class="s-pb" onclick="setterGoPage(${page+1})" ${page>=totalPages?'disabled':''}>→</button>`;
+  html += `<span class="s-pi">Page ${page}/${totalPages} · ${total} leads</span>`;
+  pag.innerHTML = html;
+}
+
+function setterGoPage(p) {
+  const filtered = setterGetFiltered();
+  const tp = Math.ceil(filtered.length / SETTER_PER_PAGE);
+  if (p < 1 || p > tp) return;
+  setterRenderPage(filtered, p);
+  document.getElementById('page-setter-leads').scrollTop = 0;
+}
+
+/* ---- Dropdown étiquettes ---- */
+const setterDD = document.getElementById('setterEtiqDD');
+
+function setterOpenDD(el, leadId) {
+  setterActiveId = leadId;
+  const rect = el.getBoundingClientRect();
+  const ddH = 9 * 38;
+  let top = rect.bottom + 4;
+  if (top + ddH > window.innerHeight) top = rect.top - ddH - 4;
+  setterDD.style.top  = top + 'px';
+  setterDD.style.left = rect.left + 'px';
+  const cur = getSetterLabel(leadId);
+  setterDD.querySelectorAll('.s-etiq-item').forEach(it =>
+    it.classList.toggle('sel', it.dataset.val === cur)
+  );
+  setterDD.classList.add('open');
+}
+
+function setterSetLabel(e, val) {
+  e.stopPropagation();
+  if (setterActiveId !== null) {
+    setterLabels[String(setterActiveId)] = val;
+    saveSetterLabels();
+    const btn = document.querySelector(`.s-etiq-sel[data-id="${setterActiveId}"]`);
+    if (btn) {
+      const meta = LABEL_META[val] || LABEL_META[''];
+      btn.innerHTML = `<span class="s-etiq-dot ${meta.cls}"></span><span>${meta.text}</span><span class="s-etiq-arrow">&#9660;</span>`;
+    }
+  }
+  setterDD.classList.remove('open');
+  setterActiveId = null;
+  if (setterLabelFilter !== '') setterApplyFilters();
+}
+
+document.addEventListener('click', e => {
+  if (setterDD && !setterDD.contains(e.target) && !e.target.closest('.s-etiq-sel'))
+    setterDD.classList.remove('open');
+});
+
+/* ══════════════════════════════════════
+   SETTER — MA JOURNÉE
+══════════════════════════════════════ */
+function renderSetterJournee() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const dateEl = document.getElementById('setter-journee-date');
+  if (dateEl) dateEl.textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+  const syncEl = document.getElementById('setter-j-sync');
+
+  if (!setterLeads.length) {
+    if (syncEl) syncEl.textContent = '⏳ Chargement...';
+    setTimeout(renderSetterJournee, 1000);
+    return;
+  }
+
+  // Cache info
+  try {
+    const c = JSON.parse(localStorage.getItem(SETTER_CACHE_KEY) || 'null');
+    if (c && syncEl) {
+      const ago = Math.round((Date.now() - c.timestamp) / 60000);
+      syncEl.textContent = ago < 60
+        ? `✅ Sync il y a ${ago} min`
+        : `✅ Sync il y a ${Math.round(ago/60)}h`;
+      syncEl.style.color = 'var(--success)';
+    }
+  } catch(e) {}
+
+  const counts = { rdv_pris:0, a_relancer:0, rappel_prog:0, contacte:0, sms:0, ne_repond_pas:0, pas_interesse:0, mauvais_num:0, '':0 };
+  setterLeads.forEach(l => {
+    const lbl = getSetterLabel(l.id);
+    counts[lbl] = (counts[lbl] || 0) + 1;
+  });
+
+  const inProgress = (counts['contacte']||0) + (counts['a_relancer']||0) + (counts['sms']||0) + (counts['rappel_prog']||0);
+
+  setText('sj-total',    setterLeads.length);
+  setText('sj-no-label', counts[''] || 0);
+  setText('sj-rdv',      counts['rdv_pris'] || 0);
+  setText('sj-relancer', counts['a_relancer'] || 0);
+  setText('sj-rappel',   counts['rappel_prog'] || 0);
+  setText('sj-nrp',      counts['ne_repond_pas'] || 0);
+
+  // Priorités : À relancer + Sans étiquette POTENTIAL + Rappel prog.
+  const priorities = setterLeads.filter(l => {
+    const lbl = getSetterLabel(l.id);
+    return lbl === 'a_relancer' || lbl === 'rappel_prog' || (lbl === '' && l.status === 'POTENTIAL');
+  }).slice(0, 10);
+
+  const prioEl = document.getElementById('sj-priority-list');
+  const prioCount = document.getElementById('sj-prio-count');
+  if (prioCount) prioCount.textContent = priorities.length;
+
+  if (prioEl) {
+    if (!priorities.length) {
+      prioEl.innerHTML = '<div class="alert alert-success"><span class="alert-icon">✅</span><div><strong>Aucune urgence !</strong><br><span style="font-size:12px;color:var(--text-secondary);">Tous les leads prioritaires ont été traités.</span></div></div>';
+    } else {
+      prioEl.innerHTML = priorities.map(l => {
+        const name = (l.firstName + ' ' + l.lastName).trim() || 'Inconnu';
+        const lbl  = getSetterLabel(l.id);
+        const meta = LABEL_META[lbl] || LABEL_META[''];
+        const phone = (l.phone||'').replace(/\s/g,'');
+        const wa    = phone.replace('+','');
+        const urgentColor = lbl === 'a_relancer' ? 'var(--accent)' : lbl === 'rappel_prog' ? 'var(--info)' : 'var(--warning)';
+        return `<div class="fup-item" style="margin-bottom:6px;">
+          <div class="fup-priority" style="background:${urgentColor};"></div>
+          <div style="flex:1;">
+            <div style="font-weight:500;">${escH(name)}</div>
+            <div style="font-size:11px;color:var(--text-tertiary);">
+              <span class="s-etiq-dot ${meta.cls}" style="width:7px;height:7px;display:inline-block;border-radius:50%;margin-right:4px;"></span>
+              ${meta.text} · ${l.funnel || 'Audit Analyse'} · ${l.createdAt || '—'}
+            </div>
+          </div>
+          ${phone ? `<a class="s-ab wa" href="https://wa.me/${wa}" target="_blank">WA</a>` : ''}
+          ${phone ? `<a class="s-ab" href="tel:${escH(phone)}">📞</a>` : ''}
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Répartition des étiquettes
+  const repEl = document.getElementById('sj-repartition');
+  if (repEl) {
+    const total = setterLeads.length || 1;
+    const bars = [
+      { key:'rdv_pris',      label:'✅ RDV Pris',        color:'var(--success)' },
+      { key:'a_relancer',    label:'🔄 À relancer',       color:'var(--accent)' },
+      { key:'contacte',      label:'📞 Contacté',         color:'var(--info)' },
+      { key:'sms',           label:'💬 Conv. SMS',        color:'#a855f7' },
+      { key:'rappel_prog',   label:'🕐 Rappel prog.',     color:'#14b8a6' },
+      { key:'ne_repond_pas', label:'🔇 Ne répond pas',    color:'var(--text-tertiary)' },
+      { key:'pas_interesse', label:'❌ Pas intéressé',    color:'#ef4444' },
+      { key:'mauvais_num',   label:'🚫 Mauvais num.',     color:'var(--warning)' },
+      { key:'',              label:'⬜ Sans étiquette',   color:'var(--border)' },
+    ];
+    repEl.innerHTML = bars.map(b => {
+      const n = counts[b.key] || 0;
+      const pct = Math.round(n / total * 100);
+      return `<div class="progress-block">
+        <div class="progress-header">
+          <span class="progress-label">${b.label}</span>
+          <span class="progress-value" style="color:${b.color}">${n} <small style="color:var(--text-tertiary);font-weight:400;">(${pct}%)</small></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${b.color};"></div></div>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* ══════════════════════════════════════
+   HoS — SUIVI SETTER
+══════════════════════════════════════ */
+let hosSetterLabelFilter = '';
+let hosSetterPage = 1;
+let hosSetterInitialized = false;
+
+async function hosInitSetter() {
+  if (hosSetterInitialized && setterLeads.length > 0) {
+    hosRenderSetterStats();
+    hosSetterApplyFilters();
+    return;
+  }
+  await initSetterPage();
+  hosSetterInitialized = true;
+  hosRenderSetterStats();
+  hosSetterApplyFilters();
+}
+
+async function hosRefreshSetter() {
+  hosSetterInitialized = false;
+  setterInitialized = false;
+  document.getElementById('hos-refresh-btn').disabled = true;
+  document.getElementById('hos-setter-loading').style.display = 'block';
+  document.getElementById('hos-setter-table').style.display = 'none';
+  await refreshSetterData();
+  hosSetterInitialized = true;
+  hosRenderSetterStats();
+  hosSetterApplyFilters();
+}
+
+function hosRenderSetterStats() {
+  const leads = setterLeads;
+  const total = leads.length;
+
+  const counts = {};
+  leads.forEach(l => {
+    const lbl = getSetterLabel(l.id);
+    counts[lbl] = (counts[lbl] || 0) + 1;
+  });
+
+  const rdv       = counts['rdv_pris'] || 0;
+  const contacted = (counts['contacte']||0) + (counts['a_relancer']||0) + (counts['sms']||0) + (counts['rappel_prog']||0) + rdv;
+  const taux      = contacted > 0 ? Math.round(rdv / contacted * 100) : 0;
+  const untreated = counts[''] || 0;
+  const inprog    = (counts['contacte']||0) + (counts['a_relancer']||0) + (counts['sms']||0);
+  const lost      = (counts['pas_interesse']||0) + (counts['mauvais_num']||0);
+
+  setText('hos-s-total',     total);
+  setText('hos-s-rdv',       rdv);
+  setText('hos-s-taux',      taux + '%');
+  setText('hos-s-untreated', untreated);
+  setText('hos-s-inprogress',inprog);
+  setText('hos-s-lost',      lost);
+
+  const badge = document.getElementById('hos-setter-badge');
+  if (badge) badge.textContent = total;
+
+  // Sync status
+  try {
+    const c = JSON.parse(localStorage.getItem(SETTER_CACHE_KEY) || 'null');
+    if (c) {
+      const ago = Math.round((Date.now() - c.timestamp) / 60000);
+      const msg = ago < 60 ? `✅ Sync il y a ${ago} min · ${total} leads` : `✅ Sync il y a ${Math.round(ago/60)}h · ${total} leads`;
+      setElText('hos-setter-sync-msg', msg);
+      setElClass('hos-setter-sync-msg', 'setter-sync-status ok');
+      document.getElementById('hos-refresh-btn').disabled = false;
+    }
+  } catch(e) {}
+
+  // Répartition étiquettes
+  const repEl = document.getElementById('hos-setter-repartition');
+  if (repEl && total > 0) {
+    const bars = [
+      { key:'rdv_pris',      label:'✅ RDV Pris',        color:'var(--success)' },
+      { key:'contacte',      label:'📞 Contacté',         color:'var(--info)' },
+      { key:'a_relancer',    label:'🔄 À relancer',       color:'var(--accent)' },
+      { key:'sms',           label:'💬 Conv. SMS',        color:'#a855f7' },
+      { key:'rappel_prog',   label:'🕐 Rappel prog.',     color:'#14b8a6' },
+      { key:'ne_repond_pas', label:'🔇 Ne répond pas',    color:'var(--text-tertiary)' },
+      { key:'pas_interesse', label:'❌ Pas intéressé',    color:'#ef4444' },
+      { key:'mauvais_num',   label:'🚫 Mauvais num.',     color:'var(--warning)' },
+      { key:'',              label:'⬜ Non traité',       color:'var(--border)' },
+    ];
+    repEl.innerHTML = bars.map(b => {
+      const n = counts[b.key] || 0;
+      const pct = Math.round(n / total * 100);
+      return `<div class="progress-block">
+        <div class="progress-header">
+          <span class="progress-label">${b.label}</span>
+          <span class="progress-value" style="color:${b.color}">${n} <small style="color:var(--text-tertiary);font-weight:400;">(${pct}%)</small></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${b.color};"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Répartition statuts iClosed
+  const statEl = document.getElementById('hos-setter-statuts');
+  if (statEl && total > 0) {
+    const pot = leads.filter(l => l.status === 'POTENTIAL').length;
+    const qua = leads.filter(l => l.status === 'QUALIFIED').length;
+    const dis = leads.filter(l => l.status === 'DISQUALIFIED').length;
+    statEl.innerHTML = [
+      { label:'À contacter (POTENTIAL)',   n:pot, color:'var(--info)' },
+      { label:'Qualifiés (QUALIFIED)',      n:qua, color:'var(--success)' },
+      { label:'Disqualifiés',              n:dis, color:'var(--accent)' },
+    ].map(b => {
+      const pct = Math.round(b.n / total * 100);
+      return `<div class="progress-block">
+        <div class="progress-header">
+          <span class="progress-label">${b.label}</span>
+          <span class="progress-value" style="color:${b.color}">${b.n} <small style="color:var(--text-tertiary);font-weight:400;">(${pct}%)</small></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${b.color};"></div></div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function hosFilterLabel(btn, lbl) {
+  hosSetterLabelFilter = lbl;
+  hosSetterPage = 1;
+  document.querySelectorAll('[data-lf-hos]').forEach(b => b.classList.remove('lf-active'));
+  btn.classList.add('lf-active');
+  hosSetterApplyFilters();
+}
+
+function hosSetterGetFiltered() {
+  let leads = setterLeads;
+  if (hosSetterLabelFilter !== '')
+    leads = leads.filter(l => getSetterLabel(l.id) === hosSetterLabelFilter);
+  const q = (document.getElementById('hos-setter-search')?.value || '').toLowerCase();
+  if (q) leads = leads.filter(l =>
+    (l.firstName+' '+l.lastName).toLowerCase().includes(q) ||
+    (l.email||'').toLowerCase().includes(q) ||
+    (l.phone||'').includes(q)
+  );
+  const sort = document.getElementById('hos-setter-sort')?.value || 'date-desc';
+  leads = leads.slice();
+  if (sort==='date-desc') leads.sort((a,b) => b.createdSort.localeCompare(a.createdSort));
+  else if (sort==='date-asc') leads.sort((a,b) => a.createdSort.localeCompare(b.createdSort));
+  else if (sort==='name-asc') leads.sort((a,b) => (a.firstName+a.lastName).localeCompare(b.firstName+b.lastName));
+  else if (sort==='priority') {
+    const o = {QUALIFIED:0,POTENTIAL:1,DISQUALIFIED:2};
+    leads.sort((a,b) => (o[a.status]||1)-(o[b.status]||1));
+  }
+  return leads;
+}
+
+function hosSetterApplyFilters() {
+  const filtered = hosSetterGetFiltered();
+  setElText('hos-setter-result-count', filtered.length);
+  setElText('hos-setter-table-count', filtered.length);
+  const tp = Math.ceil(filtered.length / SETTER_PER_PAGE);
+  hosSetterRenderPage(filtered, hosSetterPage > tp ? 1 : hosSetterPage);
+}
+
+function hosSetterRenderPage(filtered, page) {
+  hosSetterPage = page;
+  const tbody  = document.getElementById('hos-setter-tbody');
+  const noData = document.getElementById('hos-setter-no-data');
+  const table  = document.getElementById('hos-setter-table');
+  if (!tbody) return;
+
+  const totalPages = Math.ceil(filtered.length / SETTER_PER_PAGE);
+  const start = (page-1) * SETTER_PER_PAGE;
+  const pageLeads = filtered.slice(start, start + SETTER_PER_PAGE);
+
+  document.getElementById('hos-setter-loading').style.display = 'none';
+
+  if (!pageLeads.length) {
+    table.style.display = 'none';
+    noData.style.display = 'block';
+    document.getElementById('hos-setter-pagination').innerHTML = '';
+    return;
+  }
+  table.style.display = 'table';
+  noData.style.display = 'none';
+
+  const today = new Date(), d7 = new Date(), d30 = new Date();
+  d7.setDate(today.getDate()-7); d30.setDate(today.getDate()-30);
+
+  tbody.innerHTML = pageLeads.map(l => {
+    const name = (l.firstName+' '+l.lastName).trim() || 'Inconnu';
+    let dcCls = 's-dc';
+    if (l.createdSort && l.createdSort.length >= 8) {
+      const dt = new Date(parseInt(l.createdSort.slice(0,4)), parseInt(l.createdSort.slice(4,6))-1, parseInt(l.createdSort.slice(6,8)));
+      if (dt >= d7) dcCls = 's-dc s-recent';
+      else if (dt >= d30) dcCls = 's-dc s-old';
+    }
+    const rowCls = l.status==='QUALIFIED' ? 's-row-qua' : l.status==='POTENTIAL' ? 's-row-pot' : '';
+    const eok   = l.email && l.email.includes('@');
+    const sl    = l.status==='QUALIFIED' ? 'Qualifié' : l.status==='POTENTIAL' ? 'À contacter' : 'Disqualifié';
+    const bc    = l.status==='QUALIFIED' ? 's-bQ' : l.status==='POTENTIAL' ? 's-bP' : 's-bD';
+    const ed    = eok ? (l.email.length>26 ? l.email.slice(0,24)+'...' : l.email) : '';
+    const lbl   = getSetterLabel(l.id);
+    const lmeta = LABEL_META[lbl] || LABEL_META[''];
+    const phone = (l.phone||'').replace(/\s/g,'');
+
+    return `<tr class="${rowCls}">
+      <td><div class="s-nm">${escH(name)}</div>${l.setter?`<div class="s-ns">${escH(l.setter)}</div>`:''}</td>
+      <td>${phone ? `<a class="s-pl" href="tel:${escH(phone)}">${escH(l.phone)}</a>` : '<span style="color:var(--text-tertiary)">-</span>'}</td>
+      <td>${eok ? `<a class="s-el" href="mailto:${escH(l.email)}" title="${escH(l.email)}">${escH(ed)}</a>` : '<span style="color:var(--text-tertiary)">-</span>'}</td>
+      <td><span class="s-badge ${bc}">${sl}</span></td>
+      <td><span style="font-size:12px;color:var(--text-tertiary)">${escH(l.funnel||'-')}</span></td>
+      <td><span class="${dcCls}">${l.createdAt||'-'}</span></td>
+      <td><span class="s-etiq-dot ${lmeta.cls}" style="width:8px;height:8px;display:inline-block;border-radius:50%;margin-right:6px;"></span><span style="font-size:12px;">${lmeta.text}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Pagination
+  const pag = document.getElementById('hos-setter-pagination');
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+  let html = `<button class="s-pb" onclick="hosSetterGoPage(${page-1})" ${page<=1?'disabled':''}>←</button>`;
+  for (let i=1; i<=totalPages; i++) {
+    if (i===1 || i===totalPages || (i>=page-2 && i<=page+2)) {
+      html += `<button class="s-pb ${i===page?'s-active':''}" onclick="hosSetterGoPage(${i})">${i}</button>`;
+    } else if (i===page-3 || i===page+3) {
+      html += `<span class="s-pi">…</span>`;
+    }
+  }
+  html += `<button class="s-pb" onclick="hosSetterGoPage(${page+1})" ${page>=totalPages?'disabled':''}>→</button>`;
+  html += `<span class="s-pi">Page ${page}/${totalPages} · ${filtered.length} leads</span>`;
+  pag.innerHTML = html;
+}
+
+function hosSetterGoPage(p) {
+  const filtered = hosSetterGetFiltered();
+  const tp = Math.ceil(filtered.length / SETTER_PER_PAGE);
+  if (p < 1 || p > tp) return;
+  hosSetterRenderPage(filtered, p);
+}
+
+/* ---- Utilitaires ---- */
+function escH(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function setText(id, val) { const e = document.getElementById(id); if (e) e.textContent = val; }
+function setElText(id, val) { const e = document.getElementById(id); if (e) e.textContent = val; }
+function setElClass(id, cls) { const e = document.getElementById(id); if (e) e.className = cls; }
+
+// Initialiser
+switchRole('closer');
+</script>
+</body>
+</html>
