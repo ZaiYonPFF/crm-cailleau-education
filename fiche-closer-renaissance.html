@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche de Poste : Closer — Renaissance by Charlène</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: #191919;
+    color: #e6e6e5;
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 48px 120px;
+  }
+
+  .page-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  h1.page-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 32px;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid #2e2e2e;
+    margin: 32px 0;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 40px 0 12px;
+    letter-spacing: -0.2px;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e6e6e5;
+    margin: 20px 0 4px;
+  }
+
+  p {
+    color: #ccc;
+    margin-bottom: 10px;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  p em {
+    color: #bbb;
+    font-style: italic;
+  }
+
+  strong {
+    color: #e6e6e5;
+    font-weight: 600;
+  }
+
+  ul {
+    list-style: disc;
+    padding-left: 24px;
+    margin: 8px 0 16px;
+  }
+
+  ul li {
+    color: #ccc;
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 4px;
+    padding-left: 2px;
+  }
+
+  ol {
+    padding-left: 24px;
+    margin: 8px 0 16px;
+  }
+
+  ol li {
+    color: #ccc;
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 6px;
+  }
+
+  .callout {
+    background: #1f1f1f;
+    border-left: 3px solid #555;
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 15px;
+    color: #ccc;
+    line-height: 1.75;
+  }
+
+  .callout.orange {
+    border-left-color: #c4826a;
+    background: #1e1714;
+  }
+
+  .callout.blue {
+    border-left-color: #3b82f6;
+    background: #111827;
+  }
+
+  .badge-open {
+    display: inline-block;
+    background: #14532d;
+    color: #86efac;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    margin-bottom: 14px;
+  }
+
+  .section-intro {
+    font-size: 15px;
+    color: #ccc;
+    margin-bottom: 12px;
+  }
+
+  .highlight-block {
+    border-left: 3px solid #c4826a;
+    padding-left: 14px;
+    margin: 20px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .csm-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 16px 0 20px;
+  }
+
+  .csm-card {
+    background: #222;
+    border: 1px solid #2e2e2e;
+    border-radius: 6px;
+    padding: 16px 14px;
+  }
+
+  .csm-card .csm-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .csm-card .csm-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .csm-card p {
+    font-size: 13px;
+    color: #999;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .conditions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 12px 0;
+  }
+
+  .cond-row {
+    display: contents;
+  }
+
+  .cond-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e6e6e5;
+    padding: 8px 0 4px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .cond-value {
+    font-size: 14px;
+    color: #ccc;
+    padding: 8px 0 4px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 20px;
+  }
+
+  .tag {
+    background: #2a2a2a;
+    color: #ccc;
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid #3a3a3a;
+  }
+
+  .footer {
+    margin-top: 60px;
+    padding-top: 32px;
+    border-top: 1px solid #2e2e2e;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+  }
+
+  .footer strong {
+    color: #999;
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 40px 24px 80px; }
+    .csm-grid { grid-template-columns: 1fr; }
+    h1.page-title { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <span class="page-icon">📋</span>
+  <h1 class="page-title">Fiche de Poste : Closer</h1>
+
+  <hr class="divider">
+
+  <h2>Je recrute un(e) Closer pour Renaissance</h2>
+  <span class="badge-open">Phase de candidatures : OUVERTE</span>
+
+  <p><em>Renaissance est un accompagnement individuel premium créé par Charlène, pour les mamans qui ont vécu une césarienne et qui sentent que quelque chose n'est pas encore réglé. Corps tendu, images qui reviennent, sentiment de ne pas être vraiment revenue. Charlène les aide à retrouver la paix intérieure, à libérer ce qui bloque, et à se retrouver pleinement — en tant que femme, pas seulement en tant que maman.</em></p>
+
+  <p><em>Pour accélérer la croissance de Renaissance, j'ai besoin d'un(e) Closer capable de convertir des prospects déjà qualifiés en clientes convaincues. Si tu sais que vendre à une maman qui souffre, c'est d'abord l'écouter vraiment avant de conclure, tu peux devenir une pièce clé de cette aventure.</em></p>
+
+  <hr class="divider">
+
+  <h2>La Mission de Renaissance</h2>
+
+  <p>Renaissance accompagne les mamans césarisées qui portent encore les traces de leur accouchement — physiquement, émotionnellement, dans leur rapport à elles-mêmes. La méthode agit sur trois dimensions :</p>
+
+  <div class="csm-grid">
+    <div class="csm-card">
+      <span class="csm-icon">🌸</span>
+      <div class="csm-title">Corps</div>
+      <p>Relâcher les tensions physiques héritées de la césarienne. Retrouver une relation apaisée, douce et ancrée à son propre corps.</p>
+    </div>
+    <div class="csm-card">
+      <span class="csm-icon">🌿</span>
+      <div class="csm-title">Émotions</div>
+      <p>Libérer les blocages émotionnels : culpabilité, images intrusives, sentiment de ne pas avoir "avancé". Faire la paix avec son histoire.</p>
+    </div>
+    <div class="csm-card">
+      <span class="csm-icon">✨</span>
+      <div class="csm-title">Identité</div>
+      <p>Se reconnecter à qui on est vraiment, au-delà de la césarienne. Se retrouver pleinement femme, légère, présente et entière.</p>
+    </div>
+  </div>
+
+  <p>La mission de Charlène : qu'aucune maman ne reste seule avec l'impression de ne jamais être vraiment revenue.</p>
+
+  <hr class="divider">
+
+  <h2>Ton Rôle</h2>
+
+  <p>En tant que <strong>Closer de Renaissance</strong>, ta mission sera de <strong>convertir des prospects pré-qualifiées en clientes</strong> en menant des appels de vente consultative à 3 à 5 reprises par jour.</p>
+
+  <p>Tu seras en charge de :</p>
+
+  <ul>
+    <li>Conduire des appels de closing (Bilan / Sales Call) avec des prospects déjà qualifiées via Calendly</li>
+    <li>Comprendre la situation et le vécu de chaque maman, et présenter la Méthode Renaissance de façon juste et percutante</li>
+    <li>Guider la prospect dans sa prise de décision avec bienveillance, respect et conviction</li>
+    <li>Traiter les objections avec aisance, honnêteté et sensibilité — sans jamais forcer</li>
+    <li>Assurer le suivi des leads dans le CRM et maintenir les statuts à jour</li>
+    <li>Remonter les feedbacks terrain à Charlène pour améliorer continuellement les argumentaires</li>
+    <li>Être force de proposition pour optimiser le tunnel de vente</li>
+  </ul>
+
+  <hr class="divider">
+
+  <h2>Profil Recherché</h2>
+
+  <ul>
+    <li>Expérience avérée en closing B2C (accompagnements, coaching, bien-être, développement personnel)</li>
+    <li>Maîtrise des techniques de vente consultative et de gestion des objections</li>
+    <li>À l'aise avec un rythme de <strong>3 à 5 appels par jour</strong> sur des prospects qualifiées</li>
+    <li>Capacité à créer rapidement un lien de confiance sincère avec des femmes en situation sensible</li>
+    <li>Sensibilité au monde du bien-être, de la maternité et de l'accompagnement féminin</li>
+    <li><strong>Une personnalité profondément bienveillante</strong> : on ne vend pas à des mamans vulnérables, on les accompagne vers leur décision</li>
+    <li>Esprit d'équipe, sens du feedback, envie de progresser</li>
+  </ul>
+
+  <hr class="divider">
+
+  <h2>Conditions</h2>
+
+  <h3>Lieu :</h3>
+  <p>100% télétravail. Tu travailles d'où tu veux, tout se fait à distance via Zoom / Google Meet.</p>
+
+  <h3>Statut :</h3>
+  <p>Freelance / Micro-entreprise (ce n'est pas un CDI)</p>
+
+  <h3>Volume :</h3>
+  <p>3 à 5 appels par jour sur des prospects pré-qualifiées fournies par Renaissance</p>
+
+  <h3>Collaboration :</h3>
+  <p>Tu travailleras en étroite collaboration avec Charlène, fondatrice de Renaissance.</p>
+
+  <h3>Formation :</h3>
+  <p>Onboarding complet sur la méthode, les personas et les argumentaires assuré par Charlène dès le départ.</p>
+
+  <h3>Charge :</h3>
+  <p>Obligation de résultat. Tu organises ton temps comme tu veux, tant que les clientes signent.</p>
+
+  <div class="callout orange">
+    <strong>Notre philosophie :</strong> Obligation de résultat, pas de moyens. Si tu atteins tes objectifs en moins de temps, tant mieux pour toi. On ne surveille pas tes horaires. En revanche, jamais au détriment de ta vie perso, ta santé ou ta famille.
+  </div>
+
+  <hr class="divider">
+
+  <h2>Notre Approche Commerciale</h2>
+
+  <p>Chez Renaissance, on ne force jamais une maman. Notre ton : doux, authentique, orienté transformation. Les femmes qui réservent un bilan sont en confiance — elles cherchent une solution à quelque chose de profond. Cette confiance est sacrée.</p>
+
+  <p>Un Closer Renaissance ne pitche pas : il écoute, il creuse, il comprend vraiment ce que vit la prospect. Puis il lui présente honnêtement si la Méthode Renaissance est faite pour elle, et l'aide à prendre la meilleure décision pour elle.</p>
+
+  <div class="highlight-block">
+    Si tu penses que la vente = insister jusqu'à ce que ça passe, cette fiche n'est pas pour toi.
+  </div>
+
+  <hr class="divider">
+
+  <h2>Résultats Attendus</h2>
+
+  <h3>À 30 jours :</h3>
+  <ul>
+    <li>Tu es autonome dans la gestion des appels et du suivi CRM</li>
+    <li>Tu as intégré l'ensemble des process, de la méthode et des argumentaires</li>
+    <li>Tu assures un reporting régulier</li>
+    <li>Tu fais preuve de proactivité dans les retours terrain</li>
+    <li>Tu fais partie intégrante de l'équipe</li>
+  </ul>
+
+  <h3>À 90 jours :</h3>
+  <ul>
+    <li>Tu joues un rôle majeur dans la croissance de Renaissance</li>
+    <li>Tu as un taux de conversion solide et en progression</li>
+    <li>Tu prends des initiatives pour améliorer les process de closing</li>
+    <li>Tu contribues directement à transformer la vie de mamans qui en ont vraiment besoin</li>
+  </ul>
+
+  <hr class="divider">
+
+  <h2>Compétences & Savoir-Faire</h2>
+
+  <ul>
+    <li>Communication claire, impactante, sans pression excessive</li>
+    <li>Finesse émotionnelle et intelligence relationnelle — indispensables dans cet univers</li>
+    <li>Empathie profonde et capacité à créer un espace de confiance en quelques minutes</li>
+    <li>Organisation rigoureuse (suivi pipeline, CRM, reporting)</li>
+    <li>Passionné(e) par la vente, la psychologie humaine et la décision</li>
+    <li>Tu sais confronter de façon puissante ET bienveillante pour aider à la décision</li>
+    <li>Autonome avec un bon jugement et une sensibilité au feedback</li>
+  </ul>
+
+  <hr class="divider">
+
+  <h2>Pré-requis</h2>
+
+  <div class="callout">
+    On se fiche de ton diplôme. On cherche une <strong>personnalité</strong> et une <strong>attitude</strong>.
+  </div>
+
+  <ul>
+    <li>Orienté(e) résultat et performance</li>
+    <li>Tu aimes sincèrement aider les gens et tu te mets vraiment à leur place</li>
+    <li>Empathie et intelligence sociale très développées</li>
+    <li>Chasseur(se) par nature, motivé(e) par l'atteinte d'objectifs</li>
+    <li>Tu aimes tracker et mesurer tes performances</li>
+    <li>Focus, déterminé(e), autonome</li>
+    <li>Motivé(e), enthousiaste, positif(ve)</li>
+    <li>Minutieux(se), organisé(e), responsable</li>
+  </ul>
+
+  <hr class="divider">
+
+  <h2>C'est (très) bon signe si...</h2>
+
+  <ul>
+    <li>Tu adores lire et apprendre sur la vente, la psychologie humaine et la prise de décision</li>
+    <li>Tu es capable de créer ton environnement de travail et d'être autonome SI on te donne la direction et la formation</li>
+    <li>Tu es organisé(e) et sais assurer un suivi régulier sans qu'on te le rappelle</li>
+    <li>Tu es ambitieux(se) mais tu préfères t'insérer dans un projet plus grand que toi plutôt que créer ta propre boîte</li>
+    <li>Tu es sensible aux sujets liés à la maternité, au bien-être féminin ou à la santé mentale</li>
+    <li>Tu as déjà fait tes preuves dans ce métier ou un métier similaire</li>
+  </ul>
+
+  <hr class="divider">
+
+  <h2>Pourquoi Rejoindre Renaissance</h2>
+
+  <p>Tu ne rejoins pas une structure anonyme où tu es un numéro. Tu es le bras droit commercial de Charlène, avec accès direct à elle, à sa méthode et à sa communauté Les Renaissantes.</p>
+
+  <ul>
+    <li>Un cadre entrepreneurial responsabilisant et formateur</li>
+    <li>Un challenge quotidien stimulant dans un univers porteur de sens</li>
+    <li>Une montée en compétence rapide sur tous les aspects de la vente consultative en accompagnement féminin</li>
+    <li>Tu organises ton temps comme tu veux</li>
+    <li>Transparence totale sur les méthodes et les résultats</li>
+    <li>Dès le jour 1, tu es impliqué(e) à 100% dans la stratégie de Renaissance</li>
+    <li>Si tu es performant(e), tu prendras rapidement plus de responsabilités</li>
+  </ul>
+
+  <p><strong>Mais la meilleure raison de nous rejoindre, c'est que tu contribueras directement à transformer la vie de mamans qui portent encore les traces de leur césarienne — et qui méritent enfin de se retrouver pleinement.</strong></p>
+
+  <hr class="divider">
+
+  <h2>📩 Comment postuler</h2>
+
+  <p>Tu te reconnais dans cette fiche et tu as envie de tenter l'aventure ? Super. La candidature se fait en deux étapes obligatoires, pas d'exception.</p>
+
+  <div class="callout" style="border-left-color: #22c55e; background: #0f1f14; padding: 20px 24px; border-radius: 6px; margin: 20px 0;">
+    <p style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #86efac;">🎥 Étape 1 — Enregistre un Loom de présentation</p>
+    <p style="margin: 0; color: #ccc; font-size: 15px;">Envoie un <strong>Loom de présentation</strong> (2 à 5 minutes). Présente-toi, explique pourquoi ce poste te parle, et donne-nous un aperçu de ta façon de communiquer.</p>
+  </div>
+
+  <div class="callout" style="border-left-color: #3b82f6; background: #0f1520; padding: 20px 24px; border-radius: 6px; margin: 20px 0;">
+    <p style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #93c5fd;">📝 Étape 2 — Réponds au questionnaire de candidature</p>
+    <p style="margin: 0; color: #ccc; font-size: 15px;">Remplis le <strong>questionnaire de candidature</strong> en ligne. Il nous permet de mieux cerner ton parcours, ta motivation et ta façon de travailler. Quelques questions ciblées, prévoir 10 à 15 minutes.</p>
+  </div>
+
+  <div class="footer">
+    <strong>Renaissance by Charlène</strong> — Accompagnement post-césarienne par Charlène<br>
+    <span>Loom + questionnaire complétés → Charlène reviendra vers toi rapidement.</span>
+  </div>
+
+</div>
+</body>
+</html>
